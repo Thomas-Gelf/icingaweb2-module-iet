@@ -1,0 +1,97 @@
+# Icinga Web 2 - Head for multiple monitoring backends.
+# Copyright (C) 2019 Icinga Development Team
+# This file is distributed under the same license as Iet Module.
+# Thomas Gelf <thomas@gelf.net>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Iet Module (0.1.0)\n"
+"Report-Msgid-Bugs-To: dev@icinga.com\n"
+"POT-Creation-Date: 2019-03-14 21:00+0100\n"
+"PO-Revision-Date: 2019-03-14 21:25+0100\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Basepath: .\n"
+"Last-Translator: Thomas Gelf <thomas@gelf.net>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: library/Iet/ImportSource/ImportSourceIet.php:87
+msgid "CI Category"
+msgstr "CI Kategorie"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:74
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:71
+msgid "Caller"
+msgstr ""
+
+#: library/Iet/ImportSource/ImportSourceIet.php:88
+msgid "Category to search for, like \"Network Component\""
+msgstr "Kategorie in der gesucht werden soll, z.B. \"Network Component\""
+
+#: library/Iet/ProvidedHook/Eventtracker/EventActions.php:26
+msgid "Create OR"
+msgstr "OR erstellen"
+
+#: library/Iet/ProvidedHook/Eventtracker/EventActions.php:37
+#: application/controllers/OrController.php:33
+msgid "Create Operational Request"
+msgstr "Erstelle Operational Request"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:80
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:77
+msgid "FE"
+msgstr "FE"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:63
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:60
+msgid "Group (Reporter)"
+msgstr "Gruppe (Berichterstatter)"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:100
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:97
+msgid "Message body of this issue"
+msgstr "Nachrichtenrump dieses Issues"
+
+#: application/controllers/OrController.php:57
+msgid "Monitored object has not been found"
+msgstr "Überwachtes Objekt wurde nicht gefunden"
+
+#: library/Iet/ProvidedHook/Ticket.php:29
+msgid "Open Operational Request in iET"
+msgstr "Öffne Operational Request in iET"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:68
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:65
+msgid "Reporter"
+msgstr "Berichterstatter"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:58
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:55
+msgid "Source System"
+msgstr "Quellsystem"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:90
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:87
+msgid "Summary of this incident"
+msgstr "Zusammenfassung dieses Störfalls"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:86
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:83
+msgid "Title"
+msgstr "Überschrift"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:95
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:92
+msgid "details"
+msgstr "Details"
+
+#: library/Iet/Web/Form/CreateOperationalRequestForm.php:32
+#: library/Iet/Web/Form/CreateOperationalRequestForEventConsoleForm.php:29
+#: library/Iet/ImportSource/ImportSourceIet.php:63
+msgid "iET Instance"
+msgstr "iET Instanz"
