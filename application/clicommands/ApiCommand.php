@@ -133,4 +133,3 @@ class ApiCommand extends Command
         );
     }
 }
-

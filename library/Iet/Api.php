@@ -281,7 +281,6 @@ class Api
             }
 
             return $result;
-
         } catch (SoapFault $e) {
             throw new RuntimeException('SOAP ERROR: ' . $e->getMessage());
         }

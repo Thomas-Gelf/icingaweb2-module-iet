@@ -73,4 +73,3 @@ class IcingaCommandPipe
         return $service;
     }
 }
-

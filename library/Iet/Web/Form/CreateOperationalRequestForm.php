@@ -177,7 +177,6 @@ class CreateOperationalRequestForm extends Form
 
     public function setSuccessUrl($url)
     {
-
     }
 
     public function onSuccess()
@@ -247,4 +246,3 @@ class CreateOperationalRequestForm extends Form
         }
     }
 }
-

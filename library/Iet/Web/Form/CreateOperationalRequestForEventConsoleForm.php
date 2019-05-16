@@ -226,4 +226,3 @@ class CreateOperationalRequestForEventConsoleForm extends QuickForm
         }
     }
 }
-
