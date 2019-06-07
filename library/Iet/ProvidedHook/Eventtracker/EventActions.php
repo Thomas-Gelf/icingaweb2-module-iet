@@ -6,17 +6,17 @@ use gipfl\Translation\TranslationHelper;
 use gipfl\IcingaWeb2\Link;
 use Icinga\Authentication\Auth;
 use Icinga\Module\Eventtracker\Hook\EventActionsHook;
-use Icinga\Module\Eventtracker\Incident;
+use Icinga\Module\Eventtracker\Issue;
 
 class EventActions extends EventActionsHook
 {
     use TranslationHelper;
 
     /**
-     * @param Incident $incident
+     * @param Issue $issue
      * @return array
      */
-    public function getIncidentActions(Incident $incident)
+    public function getIssueActions(Issue $issue)
     {
         $auth = Auth::getInstance();
         $links = [];
@@ -26,11 +26,11 @@ class EventActions extends EventActionsHook
                 $this->translate('Create OR'),
                 'iet/or/create',
                 [
-                    'incident' => $incident->getHexUuid(),
-                    'message'  => substr($incident->get('message'), 0, 512),
-                    'host'     => $incident->get('host_name'),
-                    'object'   => $incident->get('object_name'),
-                    'severity' => $incident->get('severity'),
+                    'incident' => $issue->getHexUuid(),
+                    'message'  => substr($issue->get('message'), 0, 512),
+                    'host'     => $issue->get('host_name'),
+                    'object'   => $issue->get('object_name'),
+                    'severity' => $issue->get('severity'),
                 ],
                 [
                     'class' => 'icon-forward',
