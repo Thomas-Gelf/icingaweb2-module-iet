@@ -85,7 +85,6 @@ class Api
     public function listGroups()
     {
         $pairs = [];
-        return ['g1' => 'g1'];
 
         foreach ($this->processOperation('GetGroups')->contents->content as $item) {
             $item = get_object_vars($item);
@@ -98,7 +97,6 @@ class Api
     public function listGroupsAssignable()
     {
         $pairs = [];
-        return ['g1' => 'g1'];
         foreach ($this->processOperation('GetGroupsAssignable')->Groups->Group as $item) {
             $item = get_object_vars($item);
             $pairs[(string) $item['Group']] = (string) $item['Description'];
@@ -172,7 +170,6 @@ class Api
     public function listSourceSystems()
     {
         $pairs = [];
-        return ['Icinga' => 'Icinga'];
         foreach ($this->processOperation('GetSourceSystemIdByName')->SourceSystem as $system) {
             $system = get_object_vars($system);
             $pairs[(string) $system['SourceSystemId']] = $system['SourceSystemName'];
