@@ -28,8 +28,6 @@ class OrController extends Controller
     {
         $host = $this->params->getRequired('host');
         $service = $this->params->get('service');
-        $host = 'app1.example.com';
-        $service = null;
 
         $this->addTitle(
             $this->translate('Create Operational Request') . $this->titleSuffix($host, $service)

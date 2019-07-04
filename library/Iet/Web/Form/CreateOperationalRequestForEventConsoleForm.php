@@ -2,7 +2,7 @@
 
 namespace Icinga\Module\Iet\Web\Form;
 
-use dipl\Translation\TranslationHelper;
+use gipfl\Translation\TranslationHelper;
 use Exception;
 use Icinga\Application\Logger;
 use Icinga\Authentication\Auth;
