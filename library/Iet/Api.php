@@ -23,6 +23,10 @@ class Api
 
     protected $verifyPeer = true;
 
+    protected $sslCert;
+
+    protected $sslKey;
+
     public function __construct($baseUrl, $user, $pass)
     {
         $this->baseUrl = $this->ietNs = rtrim($baseUrl, '/');
@@ -41,6 +45,14 @@ class Api
     public function setVerifyPeer($verifyPeer = true)
     {
         $this->verifyPeer = (bool) $verifyPeer;
+
+        return $this;
+    }
+
+    public function setSslCert($cert, $key)
+    {
+        $this->sslCert = $cert;
+        $this->sslKey = $key;
 
         return $this;
     }
@@ -348,6 +360,11 @@ class Api
         if (! $this->verifyPeer) {
             $params['ssl']['verify_peer'] = false;
             $params['ssl']['verify_peer_name'] = false;
+        }
+
+        if ($this->sslKey) {
+            $params['ssl']['local_cert'] = $this->sslCert;
+            $params['ssl']['local_pk'] = $this->sslKey;
         }
 
         return stream_context_create($params);

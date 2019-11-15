@@ -14,6 +14,8 @@ webservice = "https://iet.example.com/iETWebservices"
 namespace = "http://www.example.com/iETWebservices"
 username = "icinga"
 password = "***"
+cert = "/etc/ssl/certs/client.example.com.crt"
+key = "/etc/ssl/private/client.example.com.key"
 
 [test]
 host = "iet-test.example.com"

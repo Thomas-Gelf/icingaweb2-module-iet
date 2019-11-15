@@ -161,6 +161,9 @@ class Config
         if ($ns = $config->get('namespace')) {
             $api->setNamespace($ns);
         }
+        if ($config->get('cert')) {
+            $api->setSslCert($config->get('cert'), $config->get('key'));
+        }
 
         return $api;
     }
