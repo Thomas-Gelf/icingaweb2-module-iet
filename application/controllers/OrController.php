@@ -59,7 +59,15 @@ class OrController extends Controller
             $object = new Host(Backend::instance(), $host);
             $url = Url::fromPath('monitoring/host/show', $params);
         }
-        $form->on(CreateOperationalRequestForm::ON_SUCCESS, function () use ($url) {
+
+        if (! $object->fetch()) {
+            $this->content()->add(Html::tag('p', [
+                'class' => 'error',
+            ], $this->translate('Monitored object has not been found')));
+            return;
+        }
+
+        $form->on(Form::ON_SUCCESS, function (CreateOperationalRequestForm $form) use ($url) {
             $this->redirectNow($url);
         })->setObject($object)->handleRequest($this->getServerRequest());
 
@@ -78,6 +86,12 @@ class OrController extends Controller
         $this->addSingleTab($this->translate('Create OR'));
         $form = new CreateOperationalRequestForEventConsoleForm($issue);
         $form->handleRequest($this->getServerRequest());
+        $form->on(Form::ON_SUCCESS, function (CreateOperationalRequestForEventConsoleForm $form) use ($uuid) {
+            $this->redirectNow(Url::fromPath('eventtracker/issue', [
+                'uuid' => $uuid
+            ]));
+        });
+
         $this->addForm($form);
     }
 
