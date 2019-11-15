@@ -22,20 +22,12 @@ class EventActions extends EventActionsHook
         $links = [];
 
         if ($auth->hasPermission('iet/or/create')) {
-            // TODO: link to dedicated controller. iet/or/issue?issue=<hex>
-            // -> get data from eventtracker
-            // -> set or id
-            $links[] = Link::create(
-                $this->translate('Create OR'),
-                'iet/or/issue',
-                [
-                    'issue' => $issue->getHexUuid(),
-                ],
-                [
-                    'class' => 'icon-forward',
-                    'title' => $this->translate('Create Operational Request'),
-                ]
-            );
+            $links[] = Link::create($this->translate('Create OR'), 'iet/or/issue', [
+                'uuid' => $issue->getHexUuid(),
+            ], [
+                'class' => 'icon-forward',
+                'title' => $this->translate('Create Operational Request'),
+            ]);
         }
 
         return $links;
