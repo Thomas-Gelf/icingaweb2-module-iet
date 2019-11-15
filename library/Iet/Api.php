@@ -106,6 +106,19 @@ class Api
         return $pairs;
     }
 
+    public function listRepGroups($reporter)
+    {
+        $list = [];
+
+        $content = $this->paramsToXml(['rep' => $reporter]);
+        foreach ($this->processOperation('GetRepGroups', $content)->Groups as $item) {
+            $item = get_object_vars($item->Group);
+            $list[] = (string) $item['GroupName'];
+        }
+
+        return \array_combine($list, $list);
+    }
+
     public function listGroupsAssignable()
     {
         $pairs = [];
