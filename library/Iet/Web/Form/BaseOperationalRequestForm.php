@@ -2,8 +2,10 @@
 
 namespace Icinga\Module\Iet\Web\Form;
 
+use Exception;
 use gipfl\Translation\TranslationHelper;
 use Icinga\Application\Icinga;
+use Icinga\Application\Logger;
 use Icinga\Authentication\Auth;
 use Icinga\Exception\ConfigurationError;
 use Icinga\Module\Iet\Config;
@@ -131,7 +133,12 @@ abstract class BaseOperationalRequestForm extends Form
     private function createOperationalRequest()
     {
         $key = $this->api->createOR($this->getValues());
-        $this->ack($key);
+        try {
+            $this->ack($key);
+        } catch (Exception $e) {
+            Logger::error($e->getMessage());
+            throw $e;
+        }
 
         return $key;
     }

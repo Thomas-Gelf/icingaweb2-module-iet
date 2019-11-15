@@ -2,11 +2,16 @@
 
 namespace Icinga\Module\Iet\Controllers;
 
+use gipfl\IcingaWeb2\Url;
+use Icinga\Module\Eventtracker\DbFactory;
+use Icinga\Module\Eventtracker\Issue;
 use Icinga\Module\Iet\Web\Controller;
+use Icinga\Module\Iet\Web\Form\CreateOperationalRequestForEventConsoleForm;
 use Icinga\Module\Iet\Web\Form\CreateOperationalRequestForm;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Module\Monitoring\Backend;
+use ipl\Html\Form;
 use ipl\Html\Html;
 
 class OrController extends Controller
@@ -18,6 +23,15 @@ class OrController extends Controller
     {
         $this->assertPermission('iet/or/create');
         $this->runFailSafe('showCreateForm');
+    }
+
+    /**
+     * @throws \Icinga\Security\SecurityException
+     */
+    public function issueAction()
+    {
+        $this->assertPermission('iet/or/create');
+        $this->runFailSafe('showIssueForm');
     }
 
     /**
@@ -40,30 +54,37 @@ class OrController extends Controller
         if ($service) {
             $params['service'] = $service;
             $object = new Service(Backend::instance(), $host, $service);
-            $form->setSuccessUrl('monitoring/service/show', [
-                'host'    => $host,
-                'service' => $service,
-            ]);
+            $url = Url::fromPath('monitoring/service/show', $params);
         } else {
             $object = new Host(Backend::instance(), $host);
-            $form->setSuccessUrl('monitoring/host/show', [
-                'host' => $host
-            ]);
+            $url = Url::fromPath('monitoring/host/show', $params);
         }
+        $form->on(CreateOperationalRequestForm::ON_SUCCESS, function () use ($url) {
+            $this->redirectNow($url);
+        })->setObject($object)->handleRequest($this->getServerRequest());
 
-        if (! $object->fetch()) {
-            $this->content()->add(Html::tag('p', [
-                'class' => 'error',
-            ], $this->translate('Monitored object has not been found')));
+        $this->addForm($form);
+    }
 
-            return;
-        }
+    protected function showIssueForm()
+    {
+        $uuid = $this->params->getRequired('uuid');
+        $issue = Issue::load(hex2bin($uuid), DbFactory::db());
+
+        $this->addTitle(
+            $this->translate('Create Operational Request')
+        );
+
+        $this->addSingleTab($this->translate('Create OR'));
+        $form = new CreateOperationalRequestForEventConsoleForm($issue);
+        $form->handleRequest($this->getServerRequest());
+        $this->addForm($form);
+    }
+
+    protected function addForm(Form $form)
+    {
         $wrapper = Html::tag('div', ['class' => 'icinga-module module-director']);
-
-        $form->setObject($object)
-            ->handleRequest($this->getServerRequest());
         $wrapper->add($form);
-
         $this->content()->add($wrapper);
     }
 

@@ -2,7 +2,6 @@
 
 namespace Icinga\Module\Iet\Web\Form;
 
-use Exception;
 use Icinga\Application\Logger;
 use Icinga\Module\Iet\IcingaCommandPipe;
 use Icinga\Module\Monitoring\Object\MonitoredObject;
@@ -49,14 +48,9 @@ class CreateOperationalRequestForm extends BaseOperationalRequestForm
         $instance = $this->getValue('iet_instance');
         $ackMessage = "Operational Request $instance:$ietKey has been created";
 
-        try {
-            $cmd = new IcingaCommandPipe();
-            if ($cmd->acknowledge("iET ($instance)", $ackMessage, $host, $service)) {
-                Logger::info("Problem has been acknowledged for $ietKey");
-            }
-        } catch (Exception $e) {
-            Logger::error($e->getMessage());
-            throw $e;
+        $cmd = new IcingaCommandPipe();
+        if ($cmd->acknowledge("iET ($instance)", $ackMessage, $host, $service)) {
+            Logger::info("Problem has been acknowledged for $ietKey");
         }
     }
 
