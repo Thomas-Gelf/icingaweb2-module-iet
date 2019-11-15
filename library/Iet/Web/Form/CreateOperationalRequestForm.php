@@ -4,6 +4,7 @@ namespace Icinga\Module\Iet\Web\Form;
 
 use gipfl\Translation\TranslationHelper;
 use Exception;
+use Icinga\Application\Icinga;
 use Icinga\Application\Logger;
 use Icinga\Authentication\Auth;
 use Icinga\Exception\ConfigurationError;
@@ -12,8 +13,10 @@ use Icinga\Module\Iet\IcingaCommandPipe;
 use Icinga\Module\Monitoring\Object\MonitoredObject;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\Service;
+use Icinga\Web\Notification;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DdDtDecorator;
+use ipl\Html\Html;
 
 class CreateOperationalRequestForm extends Form
 {
@@ -28,6 +31,16 @@ class CreateOperationalRequestForm extends Form
     public function __construct()
     {
         $this->setDefaultElementDecorator(new DdDtDecorator());
+    }
+
+    protected function getCached($key)
+    {
+        $file = Icinga::app()->getModuleManager()->getModule('iet')->getBaseDir() . '/iet-' . $key . '.json';
+        if (file_exists($file)) {
+            return (array) \json_decode(\file_get_contents($file));
+        } else {
+            return null;
+        }
     }
 
     protected function assemble()
@@ -57,9 +70,17 @@ class CreateOperationalRequestForm extends Form
         $myUsername = Auth::getInstance()->getUser()->getUserName();
         // $reporters = $this->api->listReporters();
         // $this->prefixEnumValueWithName($reporters);
-        $groups = $this->api->listGroupsAssignable();
+        if (null === ($allGroups = $this->getCached('all-groups'))) {
+            $allGroups = $this->api->listGroupsAssignable();
+        }
+        if (null === ($groups = $this->getCached('my-groups'))) {
+            $groups = $this->api->listRepGroups($myUsername);
+        }
+        $this->prefixEnumValueWithName($allGroups);
         $this->prefixEnumValueWithName($groups);
-        $sourceSystems = $this->api->listSourceSystems();
+        if (null === ($sourceSystems = $this->getCached('source-systems'))) {
+            $sourceSystems = $this->api->listSourceSystems();
+        }
 
         $this->addElement('select', 'sourcesystemid', [
             'label' => $this->translate('Source System'),
@@ -68,7 +89,7 @@ class CreateOperationalRequestForm extends Form
         ]);
         $this->addElement('select', 'repgrp', [
             'label' => $this->translate('Group (Reporter)'),
-            'multiOptions' => $this->optionalEnum($groups),
+            'multiOptions' => $groups,
             'required' => true,
         ]);
         $this->addElement('text', 'rep', [
@@ -85,7 +106,7 @@ class CreateOperationalRequestForm extends Form
         ]);
         $this->addElement('select', 'fe', [
             'label' => $this->translate('FE'),
-            'multiOptions' => $this->optionalEnum($groups),
+            'multiOptions' => $this->optionalEnum($allGroups),
             'required' => true,
         ]);
 
@@ -116,7 +137,9 @@ class CreateOperationalRequestForm extends Form
     protected function prefixEnumValueWithName(& $enum)
     {
         foreach ($enum as $name => $value) {
-            $enum[$name] = "$name: $value";
+            if ($name !== $value) {
+                $enum[$name] = "$name: $value";
+            }
         }
     }
 
@@ -182,8 +205,8 @@ class CreateOperationalRequestForm extends Form
     public function onSuccess()
     {
         $key = $this->createOperationalRequest();
-        $this->setSuccessMessage("New Operational Request $key has been created");
-        parent::onSuccess();
+        $message = "New Operational Request $key has been created";
+        Notification::success($message);
     }
 
     protected function optionalEnum($enum)
