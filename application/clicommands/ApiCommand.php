@@ -31,6 +31,11 @@ class ApiCommand extends Command
         );
     }
 
+    public function repGroupsAction()
+    {
+        $this->renderEnum($this->api()->listRepGroups($this->params->getRequired('reporter')));
+    }
+
     public function listGroupsAction()
     {
         $this->renderEnum($this->api()->listGroups());
