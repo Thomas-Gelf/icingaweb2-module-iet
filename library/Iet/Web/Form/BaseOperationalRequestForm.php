@@ -4,6 +4,7 @@ namespace Icinga\Module\Iet\Web\Form;
 
 use Exception;
 use gipfl\Translation\TranslationHelper;
+use Icinga\Application\Config as WebConfig;
 use Icinga\Application\Icinga;
 use Icinga\Application\Logger;
 use Icinga\Authentication\Auth;
@@ -70,10 +71,19 @@ abstract class BaseOperationalRequestForm extends Form
             $sourceSystems = $this->api->listSourceSystems();
         }
 
+        $defaultSourceSystem = WebConfig::module('iet')->get('defaults', 'sourcesystem');
+        if ($defaultSourceSystem) {
+            if ($idx = \array_search($defaultSourceSystem, $sourceSystems)) {
+                $defaultSourceSystem = $idx;
+            } elseif (! \array_key_exists($defaultSourceSystem, $sourceSystems)) {
+                $defaultSourceSystem = null;
+            }
+        }
         $this->addElement('select', 'sourcesystemid', [
-            'label' => $this->translate('Source System'),
+            'label'        => $this->translate('Source System'),
             'multiOptions' => $this->optionalEnum($sourceSystems),
-            'required' => true,
+            'value'        => $defaultSourceSystem,
+            'required'     => true,
         ]);
         $this->addElement('select', 'repgrp', [
             'label' => $this->translate('Group (Reporter)'),

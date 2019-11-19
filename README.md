@@ -67,6 +67,11 @@ namespace = "http://www.example.com/iETWebservices"
 ignore_certificate = true
 ```
 
+You might optionally want to set some defaults in `[ICINGAWEB_CONFIGDIR]/modules/iet/config.ini`:
+
+[defaults]
+sourcesystem
+
 Feedback
 --------
 
