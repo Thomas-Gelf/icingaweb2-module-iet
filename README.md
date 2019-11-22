@@ -71,7 +71,7 @@ You might optionally want to set some defaults in `[ICINGAWEB_CONFIGDIR]/modules
 
 ```ini
 [defaults]
-sourcesystem
+sourcesystem = <SOME_NAME>
 ```
 
 Feedback
