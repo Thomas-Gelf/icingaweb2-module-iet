@@ -69,8 +69,10 @@ ignore_certificate = true
 
 You might optionally want to set some defaults in `[ICINGAWEB_CONFIGDIR]/modules/iet/config.ini`:
 
+```ini
 [defaults]
 sourcesystem
+```
 
 Feedback
 --------
