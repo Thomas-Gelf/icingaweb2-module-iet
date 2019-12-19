@@ -23,13 +23,13 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
         $host = $issue->get('host_name');
         $object = $issue->get('object_name');
         $severity = $issue->get('severity');
-        $title = "$severity ";
+        $title = "EVENT: ";
         if ($host === null) {
             $title .= $object;
         } elseif ($object === null) {
             $title .= $host;
         } else {
-            $title .= "$object on $host";
+            $title .= "$host : $object";
         }
 
         $this->addElement('text', 'title1', [
