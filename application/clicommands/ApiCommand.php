@@ -36,6 +36,16 @@ class ApiCommand extends Command
         $this->renderEnum($this->api()->listRepGroups($this->params->getRequired('reporter')));
     }
 
+    public function repDefaultGroupAction()
+    {
+        $reporter = $this->params->getRequired('reporter');
+        printf(
+            "Default group for '%s' is '%s'\n",
+            $reporter,
+            $this->api()->getReportersDefaultGroup($reporter)
+        );
+    }
+
     public function listGroupsAction()
     {
         $this->renderEnum($this->api()->listGroups());

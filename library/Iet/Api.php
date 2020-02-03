@@ -119,6 +119,13 @@ class Api
         return \array_combine($list, $list);
     }
 
+    public function getReportersDefaultGroup($reporter)
+    {
+        $content = $this->paramsToXml(['rep' => $reporter]);
+
+        return (string) $this->processOperation('GetDefGroupOfRep', $content)->rep->DefGroup;
+    }
+
     public function listGroupsAssignable()
     {
         $pairs = [];

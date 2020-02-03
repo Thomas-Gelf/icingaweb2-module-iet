@@ -79,6 +79,8 @@ abstract class BaseOperationalRequestForm extends Form
                 $defaultSourceSystem = null;
             }
         }
+
+        $defaultReportingGroup = $this->api->getReportersDefaultGroup($myUsername);
         $this->addElement('select', 'sourcesystemid', [
             'label'        => $this->translate('Source System'),
             'multiOptions' => $this->optionalEnum($sourceSystems),
@@ -86,9 +88,10 @@ abstract class BaseOperationalRequestForm extends Form
             'required'     => true,
         ]);
         $this->addElement('select', 'repgrp', [
-            'label' => $this->translate('Group (Reporter)'),
+            'label'        => $this->translate('Group (Reporter)'),
             'multiOptions' => $groups,
-            'required' => true,
+            'required'     => true,
+            'value'        => $defaultReportingGroup,
         ]);
         $this->addElement('text', 'rep', [
             'label' => $this->translate('Reporter'),
