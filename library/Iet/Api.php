@@ -223,6 +223,9 @@ class Api
     {
         $xml = '';
         foreach ($params as $key => $value) {
+            if (\strlen($value) === 0) {
+                continue;
+            }
             $xml .= "<$key>" . $this->escape($value) . "</$key>\n";
         }
 
