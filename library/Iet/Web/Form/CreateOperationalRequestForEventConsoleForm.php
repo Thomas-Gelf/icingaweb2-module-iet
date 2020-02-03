@@ -55,6 +55,7 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
     protected function ack($ietKey)
     {
         $this->issue->setTicketRef($ietKey);
+        $this->issue->setOwner($this->getValue('rep'));
         $this->issue->storeToDb(DbFactory::db());
     }
 }
