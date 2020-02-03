@@ -48,22 +48,24 @@ class OperationalRequestDetails extends BaseHtmlElement
                 $or->rep,
                 $or->repgrp
             ),
-            $this->translate('FE (Rep)') => \sprintf(
-                '%s (%s)',
-                $or->fe,
-                $or->ferep
-            ),
+            $this->translate('FE') => $or->fe,
         ]));
 
-        $this->add(Html::tag('pre', $this->or->details));
-
-        if (empty($or->worklog)) {
-            return;
+        if (! empty($or->worklog)) {
+            $this->addWorklog($or->worklog);
         }
 
+        $this->add(Html::tag('h3', $this->translate('Details')));
+        $this->add(Html::tag('pre', $this->or->details));
+    }
+
+    /**
+     * @param WorklogEntry[] $worklog
+     */
+    protected function addWorklog($worklog)
+    {
         $this->add(Html::tag('h3', $this->translate('Worklog')));
-        /** @var WorklogEntry $entry */
-        foreach ($or->worklog as $entry) {
+        foreach ($worklog as $entry) {
             $this->add(Html::tag('div', [
                 'class' => 'iet-worklog-entry'
             ], [
