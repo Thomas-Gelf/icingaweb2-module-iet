@@ -20,6 +20,8 @@ class OperationalRequest
 
     public $caller;
 
+    public $status;
+
     public $details;
 
     /** @var WorklogEntry[] */
@@ -43,6 +45,7 @@ class OperationalRequest
         $or->fe      = (string) $xml->fe;
         $or->ferep   = (string) $xml->ferep;
         $or->caller  = (string) $xml->caller;
+        $or->status  = (string) $xml->status;
         $or->details = (string) $xml->details;
         foreach ($xml->worklog as $entry) {
             $or->worklog[] = WorklogEntry::fromSimpleXml($entry);

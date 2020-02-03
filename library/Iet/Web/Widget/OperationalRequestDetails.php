@@ -36,6 +36,7 @@ class OperationalRequestDetails extends BaseHtmlElement
 
         $this->add((new NameValueTable())->addNameValuePairs([
             $this->translate('Title') => $or->title,
+            $this->translate('Status') => $or->status,
             $this->translate('ID')    => Html::tag('a', [
                 'href'   => $url,
                 'class'  => 'icon-forward',
