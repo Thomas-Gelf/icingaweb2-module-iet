@@ -36,11 +36,12 @@ class OperationalRequestDetails extends BaseHtmlElement
 
         $this->add((new NameValueTable())->addNameValuePairs([
             $this->translate('Title') => $or->title,
-            $this->translate('ID')    => Html::tag('a', $or->id, [
+            $this->translate('ID')    => Html::tag('a', [
                 'href'   => $url,
+                'class'  => 'icon-forward',
                 'target' => '_blank',
                 'title'  => $this->translate('Open Operational Request in iET'),
-            ]),
+            ], $or->id),
             $this->translate('Caller') => $or->caller,
             $this->translate('Reporter (Group)') => \sprintf(
                 '%s (%s)',
@@ -62,7 +63,7 @@ class OperationalRequestDetails extends BaseHtmlElement
 
         $this->add(Html::tag('h3', $this->translate('Worklog')));
         /** @var WorklogEntry $entry */
-        foreach ($or as $entry) {
+        foreach ($or->worklog as $entry) {
             $this->add(Html::tag('div', [
                 'class' => 'iet-worklog-entry'
             ], [
