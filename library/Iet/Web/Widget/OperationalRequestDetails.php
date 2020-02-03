@@ -4,6 +4,7 @@ namespace Icinga\Module\Iet\Web\Widget;
 
 use gipfl\IcingaWeb2\Widget\NameValueTable;
 use gipfl\Translation\TranslationHelper;
+use Icinga\Module\Iet\Config;
 use Icinga\Module\Iet\OperationalRequest;
 use Icinga\Module\Iet\WorklogEntry;
 use ipl\Html\BaseHtmlElement;
@@ -29,9 +30,17 @@ class OperationalRequestDetails extends BaseHtmlElement
     protected function assemble()
     {
         $or = $this->or;
+        $host = Config::getSetting(null, 'host');
+
+        $url = \sprintf('iet://%s/displayrecord?or=%d', $host, $or->id);
+
         $this->add((new NameValueTable())->addNameValuePairs([
-            $this->translate('Title')  => $or->title,
-            $this->translate('ID')     => $or->id,
+            $this->translate('Title') => $or->title,
+            $this->translate('ID')    => Html::tag('a', $or->id, [
+                'href'   => $url,
+                'target' => '_blank',
+                'title'  => $this->translate('Open Operational Request in iET'),
+            ]),
             $this->translate('Caller') => $or->caller,
             $this->translate('Reporter (Group)') => \sprintf(
                 '%s (%s)',
