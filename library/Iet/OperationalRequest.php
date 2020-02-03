@@ -20,6 +20,7 @@ class OperationalRequest
 
     public $caller;
 
+    /** @var string Currently in use: New, Assigned, Closed, Delivered, In Progress, Redirected */
     public $status;
 
     public $details;
