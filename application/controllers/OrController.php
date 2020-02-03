@@ -5,6 +5,7 @@ namespace Icinga\Module\Iet\Controllers;
 use gipfl\IcingaWeb2\Url;
 use Icinga\Module\Eventtracker\DbFactory;
 use Icinga\Module\Eventtracker\Issue;
+use Icinga\Module\Iet\Config;
 use Icinga\Module\Iet\Web\Controller;
 use Icinga\Module\Iet\Web\Form\CreateOperationalRequestForEventConsoleForm;
 use Icinga\Module\Iet\Web\Form\CreateOperationalRequestForm;
@@ -16,6 +17,19 @@ use ipl\Html\Html;
 
 class OrController extends Controller
 {
+    public function indexAction()
+    {
+        $api = Config::getApi();
+        $id = $this->params->getRequired('id');
+        $or = $api->getOR($id);
+        $this->addSingleTab($this->translate('OR Details'));
+        $this->addTitle(\sprintf(
+            $this->translate('Operational Request #%s'),
+            $id
+        ));
+        $this->content()->add();
+    }
+
     /**
      * @throws \Icinga\Security\SecurityException
      */

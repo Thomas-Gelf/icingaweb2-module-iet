@@ -219,6 +219,22 @@ class Api
         return (string) $result->id;
     }
 
+    public function updateOR($id, $params)
+    {
+        $params->id = $id;
+        $xml = "<OR>\n" . $this->paramsToXml($params) . "</OR>\n";
+        $result = $this->processOperation('UpdateOR', $xml);
+
+        return (string) $result->id;
+    }
+
+    public function getOR($id)
+    {
+        $xml = "<OR>\n" . $this->paramsToXml(['id' => $id]) . "</OR>\n";
+
+        return OperationalRequest::fromSimpleXml($this->processOperation('GetOR', $xml)->OR);
+    }
+
     protected function paramsToXml(array $params)
     {
         $xml = '';
