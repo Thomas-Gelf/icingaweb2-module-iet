@@ -9,6 +9,7 @@ use Icinga\Module\Iet\Config;
 use Icinga\Module\Iet\Web\Controller;
 use Icinga\Module\Iet\Web\Form\CreateOperationalRequestForEventConsoleForm;
 use Icinga\Module\Iet\Web\Form\CreateOperationalRequestForm;
+use Icinga\Module\Iet\Web\Widget\OperationalRequestDetails;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Module\Monitoring\Backend;
@@ -27,7 +28,7 @@ class OrController extends Controller
             $this->translate('Operational Request #%s'),
             $id
         ));
-        $this->content()->add();
+        $this->content()->add(new OperationalRequestDetails($or));
     }
 
     /**
