@@ -21,7 +21,14 @@ class EventActions extends EventActionsHook
         $auth = Auth::getInstance();
         $links = [];
 
-        if ($auth->hasPermission('iet/or/create')) {
+        $ref = $issue->get('ticket_ref');
+        if ($ref !== null) {
+            $links[] = Link::create($ref, 'iet/or', [
+                'id' => $ref,
+            ], [
+                'title' => $this->translate('Show Operational Request'),
+            ]);
+        } elseif ($auth->hasPermission('iet/or/create')) {
             $links[] = Link::create($this->translate('Create OR'), 'iet/or/issue', [
                 'uuid' => $issue->getHexUuid(),
             ], [
