@@ -45,7 +45,7 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
         $this->addElement('textarea', 'details', array(
             'label'       => $this->translate('details'),
             'required'    => true,
-            'value'       => $this->issue->get('message'),
+            'value'       => \strip_tags($this->issue->get('message')),
             'rows'        => 8,
             'description' => $this->translate(
                 'Message body of this issue'

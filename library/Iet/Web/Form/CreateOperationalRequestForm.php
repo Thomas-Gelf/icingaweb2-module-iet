@@ -27,7 +27,7 @@ class CreateOperationalRequestForm extends BaseOperationalRequestForm
         $this->addElement('textarea', 'details', array(
             'label'       => $this->translate('details'),
             'required'    => true,
-            'value'       => $this->getObjectDefault('details'),
+            'value'       => \strip_tags($this->getObjectDefault('details')),
             'rows'        => 8,
             'description' => $this->translate(
                 'Message body of this issue'
