@@ -115,12 +115,14 @@ abstract class BaseOperationalRequestForm extends Form
 
         $this->addElement('text', 'topic', [
             'label'    => $this->translate('Worklog Topic'),
+            'ignore'   => true,
             'required' => false,
         ]);
 
         $this->addElement('textarea', 'entry', [
             'label'    => $this->translate('Worklog Entry'),
             'rows'        => 8,
+            'ignore'   => true,
             'required' => false,
         ]);
 
@@ -159,6 +161,14 @@ abstract class BaseOperationalRequestForm extends Form
         $key = $this->api->createOR($this->getValues());
         try {
             $this->ack($key);
+            $topic = $this->getValue('topic');
+            $entry = $this->getValue('entry');
+            if ($topic || $entry) {
+                $this->api->updateOR($key, [
+                    'topic' => $topic,
+                    'entry' => $entry,
+                ]);
+            }
         } catch (Exception $e) {
             Logger::error($e->getMessage());
             throw $e;
