@@ -233,11 +233,11 @@ class Api
     public function addLinkToOR($id, $label, $url)
     {
         $params = (array) [
-            'id'        => $id,
+            'rfi_id'    => $id,
             'link_url'  => $url,
             'link_name' => $label,
         ];
-        $xml = "<OR>\n" . $this->paramsToXml($params) . "</OR>\n";
+        $xml = "<AddLinkToOR>\n" . $this->paramsToXml($params) . "</AddLinkToOR>\n";
         $this->processOperation('AddLinkToOR', $xml);
     }
 
