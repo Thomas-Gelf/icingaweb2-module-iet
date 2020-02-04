@@ -1,11 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="PHP_CodeSniffer">
-    <description>Sniff our code a while</description>
-
-    <file>run.php</file>
-    <file>application/</file>
-    <file>library/</file>
-
+    <file>.</file>
     <arg value="wps"/>
     <arg name="colors"/>
     <arg name="report-width" value="auto"/>

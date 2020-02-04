@@ -131,7 +131,7 @@ abstract class BaseOperationalRequestForm extends Form
         ]);
     }
 
-    protected function prefixEnumValueWithName(& $enum)
+    protected function prefixEnumValueWithName(&$enum)
     {
         foreach ($enum as $name => $value) {
             if ($name !== $value) {

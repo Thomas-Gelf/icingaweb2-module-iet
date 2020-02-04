@@ -63,15 +63,18 @@ class ApiCommand extends Command
             'service'        => $p->get('service', 'iET Enterprise'),
             'requesteddate'  => $p->get('requesteddate', date('d.m.Y')),
         ];
+
         $required = [
             'title'          => 'title1',  // Just a test OR
             'details'        => 'details', // Blabla, please ignore / delete this
-            'group'          => 'repgrp', // ITZF-IAM -> owner group?
-            'reporter'       => 'rep', // GLM -> RepId? -> getReps
-            'caller'         => 'caller', // User? glm
-            'fe'             => 'fe',  // ? BBFH-IET -> Gruppe: ITSM Application
+            'group'          => 'repgrp',  // Owner group, creator, shouldn't be changed
+                                           // repgrp => representative group
+            'reporter'       => 'rep',     // owner (rep = representative)
+            'caller'         => 'caller',  // Mostly the owner
+            'fe'             => 'fe',      // This is the "transfer group", could be changed
             'sourcesystemid' => 'sourcesystemid',
         ];
+
         $optional = [];
         foreach ($required as $param => $name) {
             $params[$name] = $p->getRequired($param);
