@@ -221,7 +221,8 @@ class Api
 
     public function updateOR($id, $params)
     {
-        $params->id = $id;
+        $params = (array) $params;
+        $params['id'] = $id;
         $xml = "<OR>\n" . $this->paramsToXml($params) . "</OR>\n";
         $result = $this->processOperation('UpdateOR', $xml);
 
