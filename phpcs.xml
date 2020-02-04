@@ -9,5 +9,5 @@
     <arg name="report-summary"/>
     <arg name="encoding" value="UTF-8"/>
 
-    <rule ref="PSR2"/>
+    <rule ref="PSR12"/>
 </ruleset>
