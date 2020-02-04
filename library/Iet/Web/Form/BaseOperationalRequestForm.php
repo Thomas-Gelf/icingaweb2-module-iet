@@ -169,12 +169,25 @@ abstract class BaseOperationalRequestForm extends Form
                     'entry' => $entry,
                 ]);
             }
+            $this->addLinks($key);
         } catch (Exception $e) {
             Logger::error($e->getMessage());
             throw $e;
         }
 
         return $key;
+    }
+
+    protected function addLinks($id)
+    {
+        foreach (WebConfig::module('iet')->getSection('links') as $name => $value) {
+            $this->api->addLinkToOR($id, $name, $this->fillLinkPattern($value));
+        }
+    }
+
+    protected function fillLinkPattern($link)
+    {
+        return $link;
     }
 
     protected function makeEnum($data, $key, $name, $reject = null)

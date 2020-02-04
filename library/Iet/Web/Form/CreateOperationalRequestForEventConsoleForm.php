@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Iet\Web\Form;
 
+use Icinga\Module\Eventtracker\ConfigHelper;
 use Icinga\Module\Eventtracker\DbFactory;
 use Icinga\Module\Eventtracker\Issue;
 
@@ -50,6 +51,11 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
                 'Message body of this issue'
             ),
         ));
+    }
+
+    protected function fillLinkPattern($link)
+    {
+        return ConfigHelper::fillPlaceholders($link, $this->issue);
     }
 
     protected function ack($ietKey)

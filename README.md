@@ -72,6 +72,11 @@ You might optionally want to set some defaults in `[ICINGAWEB_CONFIGDIR]/modules
 ```ini
 [defaults]
 sourcesystem = <SOME_NAME>
+
+[links]
+Event Source = "https://icinga.example.com/icingaweb2/eventtracker/issue?uuid={uuid}"
+DokuWiki = "{attributes.my_dokuwiki}"
+Knowledge Base = "{attributes.my_knowledge_base}"
 ```
 
 Feedback

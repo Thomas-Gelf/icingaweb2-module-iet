@@ -229,6 +229,17 @@ class Api
         return (string) $result->id;
     }
 
+    public function addLinkToOR($id, $label, $url)
+    {
+        $params = (array) [
+            'id'        => $id,
+            'link_url'  => $url,
+            'link_name' => $label,
+        ];
+        $xml = "<OR>\n" . $this->paramsToXml($params) . "</OR>\n";
+        $this->processOperation('AddLinkToOR', $xml);
+    }
+
     public function getOR($id)
     {
         $xml = "<OR>\n" . $this->paramsToXml(['id' => $id]) . "</OR>\n";
