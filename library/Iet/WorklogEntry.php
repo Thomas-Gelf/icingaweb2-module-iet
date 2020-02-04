@@ -6,9 +6,9 @@ use SimpleXMLElement;
 
 class WorklogEntry
 {
-    public $entry;
-
     public $topic;
+
+    public $entry;
 
     public $enteredby;
 
@@ -25,8 +25,8 @@ class WorklogEntry
     public static function fromSimpleXml(SimpleXMLElement $xml)
     {
         $entry = new static();
-        $entry->entry      = (string) $xml->entry;
         $entry->topic      = (string) $xml->topic;
+        $entry->entry      = (string) $xml->entry;
         $entry->enteredby  = (string) $xml->enteredby;
         $entry->enteredate = \strtotime((string) $xml->enteredate);
 

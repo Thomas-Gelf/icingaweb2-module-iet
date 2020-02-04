@@ -113,6 +113,17 @@ abstract class BaseOperationalRequestForm extends Form
 
         $this->addMessageDetails();
 
+        $this->addElement('text', 'topic', [
+            'label'    => $this->translate('Worklog Topic'),
+            'required' => false,
+        ]);
+
+        $this->addElement('textarea', 'entry', [
+            'label'    => $this->translate('Worklog Entry'),
+            'rows'        => 8,
+            'required' => false,
+        ]);
+
         $this->addElement('submit', 'submit', [
             'label' => $this->translate('Create')
         ]);
