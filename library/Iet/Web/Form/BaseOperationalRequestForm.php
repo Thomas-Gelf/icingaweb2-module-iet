@@ -181,7 +181,10 @@ abstract class BaseOperationalRequestForm extends Form
     protected function addLinks($id)
     {
         foreach (WebConfig::module('iet')->getSection('links') as $name => $value) {
-            $this->api->addLinkToOR($id, $name, $this->fillLinkPattern($value));
+            $link = $this->fillLinkPattern($value);
+            if (\strlen($link) > 0) {
+                $this->api->addLinkToOR($id, $name, $this->fillLinkPattern($value));
+            }
         }
     }
 
