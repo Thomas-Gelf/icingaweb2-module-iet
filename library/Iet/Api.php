@@ -202,6 +202,7 @@ class Api
     public function listSourceSystems()
     {
         $pairs = [];
+        // GetListOfSourceSystem -> SourceSystemList -> SourceSystem: SourceSystemId => SourceSystemName
         foreach ($this->processOperation('GetSourceSystemIdByName')->SourceSystem as $system) {
             $system = get_object_vars($system);
             $pairs[(string) $system['SourceSystemId']] = $system['SourceSystemName'];
