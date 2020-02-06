@@ -56,7 +56,7 @@ class EventActions extends EventActionsHook
         if ($auth->hasPermission('iet/or/create')) {
             $filter = Filter::matchAny();
             foreach ($issues->getIssues() as $issue) {
-                $filter->addFilter(Filter::where('uuid', $issue->getHexUuid()));
+                $filter->addFilter(Filter::matchAll(Filter::where('uuid', $issue->getHexUuid())));
             }
             $link = Url::fromPath('iet/or/issue');
             $url = $link->getAbsoluteUrl() . '?' . $filter->toQueryString();
