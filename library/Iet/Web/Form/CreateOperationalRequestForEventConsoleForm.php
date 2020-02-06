@@ -31,20 +31,32 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
         } else {
             $hosts = [];
             $messages = [];
-            $i = 0;
             foreach ($issues as $issue) {
-                $i++;
                 $hosts[$issue->get('host_name')] = true;
+            }
+            foreach ($issues as $issue) {
+                if (\count($hosts) === 1) {
+                    $object = $issue->get('object_name');
+                } else {
+                    $object = \sprintf('%s : %s', $issue->get('host_name'), $issue->get('object_name'));
+                }
                 $messages[] = \sprintf(
-                    '%d) %s: %s',
-                    $i,
-                    $issue->get('object_name'),
+                    '%s: %s',
+                    $object,
                     $this->shorten(
                         \preg_replace('/^(.+)[\r\n].+?$/s', '\1', \trim(\strip_tags($issue->get('message')))),
-                        60
+                        120
                     )
                 );
             }
+
+            \natcasesort($messages);
+            $i = 0;
+            foreach ($messages as & $message) {
+                $i++;
+                $message = "$i) $message";
+            }
+
             $message = \implode("\n", $messages);
             $hosts = \array_keys($hosts);
             $object = \sprintf('%s problems', count($issues));
