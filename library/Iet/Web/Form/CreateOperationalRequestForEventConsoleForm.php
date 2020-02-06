@@ -39,10 +39,10 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
                     '%d) %s: %s',
                     $i,
                     $issue->get('object_name'),
-                    \strip_tags($this->shorten(
-                        \preg_replace('/^(.+)[\r\n].+/s', '\1', $issue->get('message')),
+                    $this->shorten(
+                        \preg_replace('/^(.+)[\r\n].+?$/s', '\1', \trim(\strip_tags($issue->get('message')))),
                         60
-                    ))
+                    )
                 );
             }
             $message = \implode("\n", $messages);
