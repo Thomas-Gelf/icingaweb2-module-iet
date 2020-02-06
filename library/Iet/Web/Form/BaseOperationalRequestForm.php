@@ -19,7 +19,7 @@ abstract class BaseOperationalRequestForm extends Form
     use TranslationHelper;
 
     /** @@var \Icinga\Module\Iet\Api */
-    private $api;
+    protected $api;
 
     private $cacheDir;
 

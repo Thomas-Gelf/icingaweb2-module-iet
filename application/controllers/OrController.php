@@ -5,6 +5,9 @@ namespace Icinga\Module\Iet\Controllers;
 use gipfl\IcingaWeb2\Url;
 use Icinga\Module\Eventtracker\DbFactory;
 use Icinga\Module\Eventtracker\Issue;
+use Icinga\Module\Eventtracker\IssueHistory;
+use Icinga\Module\Eventtracker\SetOfIssues;
+use Icinga\Module\Eventtracker\Uuid;
 use Icinga\Module\Iet\Config;
 use Icinga\Module\Iet\Web\Controller;
 use Icinga\Module\Iet\Web\Form\CreateOperationalRequestForEventConsoleForm;
@@ -37,7 +40,9 @@ class OrController extends Controller
     public function createAction()
     {
         $this->assertPermission('iet/or/create');
-        $this->runFailSafe('showCreateForm');
+        $this->runFailSafe(function () {
+            $this->showCreateForm();
+        });
     }
 
     /**
@@ -46,7 +51,9 @@ class OrController extends Controller
     public function issueAction()
     {
         $this->assertPermission('iet/or/create');
-        $this->runFailSafe('showIssueForm');
+        $this->runFailSafe(function () {
+            $this->showIssueForm();
+        });
     }
 
     /**
@@ -91,15 +98,42 @@ class OrController extends Controller
 
     protected function showIssueForm()
     {
-        $uuid = $this->params->getRequired('uuid');
-        $issue = Issue::load(hex2bin($uuid), DbFactory::db());
+        $db = DbFactory::db();
+        $uuid = $this->params->get('uuid');
+        if ($uuid === null) {
+            $issues = SetOfIssues::fromUrl($this->url(), $db);
+            $count = \count($issues);
+            $this->addTitle($this->translate('%d issues'), $count);
+        } else {
+            $uuid = Uuid::toBinary($uuid);
+            if ($issue = Issue::loadIfExists($uuid, $db)) {
+                $issues = [$issue];
+            } elseif (IssueHistory::exists($uuid, $db)) {
+                $this->addTitle($this->translate('Issue has been closed'));
+                $this->content()->add(Html::tag('p', [
+                    'class' => 'state-hint ok'
+                ], $this->translate('This issue has already been closed.')
+                    . ' '
+                    . $this->translate('Future versions will show an Issue history in this place')));
+
+                return;
+            } else {
+                $this->addTitle($this->translate('Not found'));
+                $this->content()->add(Html::tag('p', [
+                    'class' => 'state-hint error'
+                ], $this->translate('There is no such issue')));
+
+                return;
+            }
+
+        }
 
         $this->addTitle(
             $this->translate('Create Operational Request')
         );
 
         $this->addSingleTab($this->translate('Create OR'));
-        $form = new CreateOperationalRequestForEventConsoleForm($issue);
+        $form = new CreateOperationalRequestForEventConsoleForm($issues);
         $form->on(Form::ON_SUCCESS, function (CreateOperationalRequestForEventConsoleForm $form) use ($uuid) {
             $this->redirectNow(Url::fromPath('eventtracker/issue', [
                 'uuid' => $uuid

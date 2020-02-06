@@ -2,28 +2,59 @@
 
 namespace Icinga\Module\Iet\Web\Form;
 
+use Icinga\Application\Config as WebConfig;
 use Icinga\Module\Eventtracker\ConfigHelper;
 use Icinga\Module\Eventtracker\DbFactory;
 use Icinga\Module\Eventtracker\Issue;
+use Icinga\Module\Eventtracker\SetOfIssues;
 
 class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequestForm
 {
-    /** @var Issue */
-    protected $issue;
+    /** @var SetOfIssues */
+    protected $issues;
 
-    public function __construct(Issue $issue)
+    public function __construct(SetOfIssues $issues)
     {
-        $this->issue = $issue;
+        $this->issues = $issues;
         parent::__construct();
     }
 
     protected function addMessageDetails()
     {
-        $issue = $this->issue;
+        $issues = $this->issues->getIssues();
+        if (\count($issues) === 1) {
+            $issue = \current($issues);
+            $host = $issue->get('host_name');
+            $object = $issue->get('object_name');
+            $message = \strip_tags($issue->get('message'));
+            // UNUSED: $severity = $issue->get('severity');
+        } else {
+            $hosts = [];
+            $messages = [];
+            $i = 0;
+            foreach ($issues as $issue) {
+                $i++;
+                $hosts[$issue->get('host_name')] = true;
+                $messages[] = \sprintf(
+                    '%d) %s: %s',
+                    $i,
+                    $issue->get('object_name'),
+                    \strip_tags($this->shorten(
+                        \preg_replace('/^(.+)[\r\n].+/s', '\1', $issue->get('message')),
+                        60
+                    ))
+                );
+            }
+            $message = \implode("\n", $messages);
+            $hosts = \array_keys($hosts);
+            $object = \sprintf('%s problems', count($issues));
+            if (\count($hosts) === 1) {
+                $host = $hosts[0];
+            } else {
+                $host = \sprintf('%s and %d more host(s)', $hosts[0], \count($hosts) - 1);
+            }
+        }
 
-        $host = $issue->get('host_name');
-        $object = $issue->get('object_name');
-        $severity = $issue->get('severity');
         $title = "EVENT: ";
         if ($host === null) {
             $title .= $object;
@@ -45,7 +76,7 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
         $this->addElement('textarea', 'details', array(
             'label'       => $this->translate('details'),
             'required'    => true,
-            'value'       => \strip_tags($this->issue->get('message')),
+            'value'       => $message,
             'rows'        => 8,
             'description' => $this->translate(
                 'Message body of this issue'
@@ -53,15 +84,52 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
         ));
     }
 
-    protected function fillLinkPattern($link)
+    protected function shorten($string, $length)
     {
-        return ConfigHelper::fillPlaceholders($link, $this->issue);
+        if (\strlen($string) <= $length) {
+            return $string;
+        } else {
+            return \substr($string, 0, $length) . '...';
+        }
+    }
+
+    protected function addLinks($id)
+    {
+        $configuredLinks = WebConfig::module('iet')->getSection('links');
+        $issues = $this->issues->getIssues();
+        if (\count($issues) === 1) {
+            $issue = $issues[0];
+            foreach ($configuredLinks as $name => $value) {
+                $link = $this->fillLinkPatternForIssue($value, $issue);
+                if (\strlen($link) > 0) {
+                    $this->api->addLinkToOR($id, $name, $link);
+                }
+            }
+        } else {
+            foreach ($configuredLinks as $name => $value) {
+                $i = 0;
+                foreach ($issues as $issue) {
+                    $i++;
+                    $link = $this->fillLinkPatternForIssue($value, $issue);
+                    if (\strlen($link) > 0) {
+                        $this->api->addLinkToOR($id, "$name $i", $link);
+                    }
+                }
+            }
+        }
+    }
+
+    protected function fillLinkPatternForIssue($link, Issue $issue)
+    {
+        return ConfigHelper::fillPlaceholders($link, $issue);
     }
 
     protected function ack($ietKey)
     {
-        $this->issue->setTicketRef($ietKey);
-        $this->issue->setOwner($this->getValue('rep'));
-        $this->issue->storeToDb(DbFactory::db());
+        foreach ($this->issues->getIssues() as $issue) {
+            $issue->setTicketRef($ietKey);
+            $issue->setOwner($this->getValue('rep'));
+            $issue->storeToDb(DbFactory::db());
+        }
     }
 }
