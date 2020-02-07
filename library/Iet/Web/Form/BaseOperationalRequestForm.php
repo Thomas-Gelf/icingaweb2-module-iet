@@ -105,6 +105,10 @@ abstract class BaseOperationalRequestForm extends Form
             'value'        => $defaultFe,
             'required'     => true,
         ]);
+        $this->addElement('text', 'service', [
+            'label'    => $this->translate('Service'),
+            'value'    => $this->getDefaultFromConfig('service'),
+        ]);
 
         $this->addMessageDetails();
 
