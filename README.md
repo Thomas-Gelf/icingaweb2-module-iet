@@ -71,8 +71,8 @@ You might optionally want to set some defaults in `[ICINGAWEB_CONFIGDIR]/modules
 
 ```ini
 [defaults]
-sourcesystem = <SOME_NAME>
-fe = ${icinga.vars.my_fe}
+sourcesystem = "Some Name"
+fe = "{icinga.vars.my_fe}"
 service = "AB02 My Service"
 
 [links]
