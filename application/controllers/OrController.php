@@ -107,7 +107,7 @@ class OrController extends Controller
         } else {
             $uuid = Uuid::toBinary($uuid);
             if ($issue = Issue::loadIfExists($uuid, $db)) {
-                $issues = [$issue];
+                $issues = new SetOfIssues($db, [$issue]);
             } elseif (IssueHistory::exists($uuid, $db)) {
                 $this->addTitle($this->translate('Issue has been closed'));
                 $this->content()->add(Html::tag('p', [
