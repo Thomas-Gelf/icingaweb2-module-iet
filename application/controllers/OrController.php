@@ -134,9 +134,11 @@ class OrController extends Controller
 
         $this->addSingleTab($this->translate('Create OR'));
         $form = new CreateOperationalRequestForEventConsoleForm($issues);
-        $form->on(Form::ON_SUCCESS, function (CreateOperationalRequestForEventConsoleForm $form) use ($uuid) {
+        $form->on(Form::ON_SUCCESS, function (CreateOperationalRequestForEventConsoleForm $form) use ($issues) {
+            /** @var Issue $issue */
+            $issue = \current($issues->getIssues());
             $this->redirectNow(Url::fromPath('eventtracker/issue', [
-                'uuid' => $uuid
+                'uuid' => $issue->getNiceUuid()
             ]));
         })->handleRequest($this->getServerRequest());
 
