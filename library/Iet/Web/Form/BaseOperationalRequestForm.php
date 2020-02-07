@@ -71,14 +71,8 @@ abstract class BaseOperationalRequestForm extends Form
             $sourceSystems = $this->api->listSourceSystems();
         }
 
-        $defaultSourceSystem = WebConfig::module('iet')->get('defaults', 'sourcesystem');
-        if ($defaultSourceSystem) {
-            if ($idx = \array_search($defaultSourceSystem, $sourceSystems)) {
-                $defaultSourceSystem = $idx;
-            } elseif (! \array_key_exists($defaultSourceSystem, $sourceSystems)) {
-                $defaultSourceSystem = null;
-            }
-        }
+        $defaultSourceSystem = $this->getDefaultFromConfig('sourcesystem', $sourceSystems);
+        $defaultFe = $this->getDefaultFromConfig('fe', $allGroups);
 
         $defaultReportingGroup = $this->api->getReportersDefaultGroup($myUsername);
         $this->addElement('select', 'sourcesystemid', [
@@ -108,7 +102,8 @@ abstract class BaseOperationalRequestForm extends Form
         $this->addElement('select', 'fe', [
             'label' => $this->translate('FE'),
             'multiOptions' => $this->optionalEnum($allGroups),
-            'required' => true,
+            'value'        => $defaultFe,
+            'required'     => true,
         ]);
 
         $this->addMessageDetails();
@@ -129,6 +124,26 @@ abstract class BaseOperationalRequestForm extends Form
         $this->addElement('submit', 'submit', [
             'label' => $this->translate('Create')
         ]);
+    }
+
+    protected function getDefaultFromConfig($property, $enum = null, $default = null)
+    {
+        $setting = WebConfig::module('iet')->get('defaults', $property);
+        if ($setting !== null) {
+            if ($enum !== null) {
+                if ($idx = \array_search($setting, $enum)) {
+                    $setting = $idx;
+                } elseif (! \array_key_exists($setting, $enum)) {
+                    $setting = null;
+                }
+            }
+        }
+
+        if ($setting === null) {
+            return $default;
+        } else {
+            return $this->fillPlaceholders($setting);
+        }
     }
 
     protected function prefixEnumValueWithName(&$enum)
@@ -181,16 +196,16 @@ abstract class BaseOperationalRequestForm extends Form
     protected function addLinks($id)
     {
         foreach (WebConfig::module('iet')->getSection('links') as $name => $value) {
-            $link = $this->fillLinkPattern($value);
+            $link = $this->fillPlaceholders($value);
             if (\strlen($link) > 0) {
-                $this->api->addLinkToOR($id, $name, $this->fillLinkPattern($value));
+                $this->api->addLinkToOR($id, $name, $this->fillPlaceholders($value));
             }
         }
     }
 
-    protected function fillLinkPattern($link)
+    protected function fillPlaceholders($string)
     {
-        return $link;
+        return $string;
     }
 
     protected function makeEnum($data, $key, $name, $reject = null)

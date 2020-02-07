@@ -112,7 +112,7 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
         if (\count($issues) === 1) {
             $issue = $issues[0];
             foreach ($configuredLinks as $name => $value) {
-                $link = $this->fillLinkPatternForIssue($value, $issue);
+                $link = $this->fillPlaceholdersForIssue($value, $issue);
                 if (\strlen($link) > 0) {
                     $this->api->addLinkToOR($id, $name, $link);
                 }
@@ -122,7 +122,7 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
                 $i = 0;
                 foreach ($issues as $issue) {
                     $i++;
-                    $link = $this->fillLinkPatternForIssue($value, $issue);
+                    $link = $this->fillPlaceholdersForIssue($value, $issue);
                     if (\strlen($link) > 0) {
                         $this->api->addLinkToOR($id, "$name $i", $link);
                     }
@@ -131,9 +131,14 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
         }
     }
 
-    protected function fillLinkPatternForIssue($link, Issue $issue)
+    protected function fillPlaceholdersForIssue($string, Issue $issue)
     {
-        return ConfigHelper::fillPlaceholders($link, $issue);
+        return ConfigHelper::fillPlaceholders($string, $issue);
+    }
+
+    protected function fillPlaceholders($string)
+    {
+        return $this->fillPlaceholdersForIssue($string, \current($this->issues->getIssues()));
     }
 
     protected function ack($ietKey)

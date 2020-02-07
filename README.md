@@ -72,6 +72,8 @@ You might optionally want to set some defaults in `[ICINGAWEB_CONFIGDIR]/modules
 ```ini
 [defaults]
 sourcesystem = <SOME_NAME>
+fe = ${icinga.vars.my_fe}
+service = "AB02 My Service"
 
 [links]
 Event Source = "https://icinga.example.com/icingaweb2/eventtracker/issue?uuid={uuid}"
