@@ -215,7 +215,7 @@ class Api
     public function createOR($params)
     {
         $xml = "<root>\n" . $this->paramsToXml($params) . "</root>\n";
-        $result = $this->processOperation('CreateOR', $xml);
+        $result = $this->processOperation('CreateOR', $xml, '1.1');
 
         return (string) $result->id;
     }
@@ -245,7 +245,7 @@ class Api
     {
         $xml = "<OR>\n" . $this->paramsToXml(['id' => $id]) . "</OR>\n";
 
-        return OperationalRequest::fromSimpleXml($this->processOperation('GetOR', $xml)->OR);
+        return OperationalRequest::fromSimpleXml($this->processOperation('GetOR', $xml, '1.1')->OR);
     }
 
     protected function paramsToXml(array $params)
