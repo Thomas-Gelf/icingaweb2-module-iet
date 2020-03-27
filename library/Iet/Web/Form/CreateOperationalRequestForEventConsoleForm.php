@@ -133,7 +133,7 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
 
     protected function fillPlaceholdersForIssue($string, Issue $issue)
     {
-        return ConfigHelper::fillPlaceholders($string, $issue);
+        return ConfigHelper::fillPlaceHoldersForIssue($string, $issue, DbFactory::db());
     }
 
     protected function fillPlaceholders($string)

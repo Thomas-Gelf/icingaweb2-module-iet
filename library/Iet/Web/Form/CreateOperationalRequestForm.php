@@ -3,6 +3,7 @@
 namespace Icinga\Module\Iet\Web\Form;
 
 use Icinga\Application\Logger;
+use Icinga\Module\Eventtracker\ConfigHelper;
 use Icinga\Module\Iet\IcingaCommandPipe;
 use Icinga\Module\Monitoring\Object\MonitoredObject;
 use Icinga\Module\Monitoring\Object\Host;
@@ -59,6 +60,11 @@ class CreateOperationalRequestForm extends BaseOperationalRequestForm
         $this->object = $object;
 
         return $this;
+    }
+
+    protected function fillPlaceholders($string)
+    {
+        return ConfigHelper::fillPlaceholders($string, $this->object);
     }
 
     private function getObjectDefault($key)
