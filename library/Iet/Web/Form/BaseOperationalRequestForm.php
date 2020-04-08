@@ -117,6 +117,10 @@ abstract class BaseOperationalRequestForm extends Form
             'ignore'   => true,
             'required' => false,
         ]);
+        $this->addElement('text', 'requesteddate', [
+            'label'    => $this->translate('Requested Date'),
+            'value'    => \date('d.m.Y', \time() + 86400 * 4),
+        ]);
 
         $this->addElement('textarea', 'entry', [
             'label'    => $this->translate('Worklog Entry'),
