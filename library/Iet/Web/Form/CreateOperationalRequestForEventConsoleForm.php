@@ -67,7 +67,10 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
             }
         }
 
-        $title = "EVENT: ";
+        $title = \sprintf(
+            'EVENT: %s ',
+            \strtoupper($this->issues->getWorstSeverity())
+        );
         if ($host === null) {
             $title .= $object;
         } elseif ($object === null) {
