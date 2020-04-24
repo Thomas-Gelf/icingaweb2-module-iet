@@ -57,8 +57,9 @@ class ImportSourceIetRaw extends ImportSourceHook
 
     protected function parseKeyValueString(SimpleXMLElement $result)
     {
-        $data = [];
+        $all = [];
         foreach ($result as $element) {
+            $data = [];
             $parts = \preg_split('/,/', $element, -1, PREG_SPLIT_NO_EMPTY);
             foreach ($parts as $part) {
                 if (\preg_match('/^(.+)=(.*)$/', $part, $match)) {
@@ -71,9 +72,10 @@ class ImportSourceIetRaw extends ImportSourceHook
                     ));
                 }
             }
+            $all[] = (object) $data;
         }
 
-        return $data;
+        return $all;
     }
 
     protected function fixObjectList(SimpleXMLElement $result)
