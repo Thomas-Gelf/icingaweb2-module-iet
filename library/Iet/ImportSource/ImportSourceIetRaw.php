@@ -25,11 +25,18 @@ class ImportSourceIetRaw extends ImportSourceHook
     {
         $api = Config::getApi($this->getSetting('iet_instance'));
 
-        return $api->processOperation(
+        $result = $api->processOperation(
             $this->getSetting('process'),
             $this->getSetting('xml'),
             $this->getSetting('version')
         );
+
+        if (\is_string($result)) {
+            // For VERY simple APIs
+            return [0 => (object) ['stringResult' => $result]];
+        } else {
+            return $result;
+        }
     }
 
     public function listColumns()
