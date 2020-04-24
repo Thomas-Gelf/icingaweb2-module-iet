@@ -90,6 +90,7 @@ class ImportSourceIetRaw extends ImportSourceHook
             'description' => $form->translate(
                 'This XML will be placed into the processData tag of the ProcessOperation method'
             ),
+            'rows'        => 10,
             'required'    => true,
         ));
 
