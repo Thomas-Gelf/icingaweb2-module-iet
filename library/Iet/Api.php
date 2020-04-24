@@ -314,7 +314,7 @@ class Api
         }
     }
 
-    protected function processOperation($operation, $data = null, $version = '1.0')
+    public function processOperation($operation, $data = null, $version = '1.0')
     {
         $body = $this->makeOperation($operation, $data, $version);
         try {
