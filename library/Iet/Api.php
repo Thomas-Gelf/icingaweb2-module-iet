@@ -393,12 +393,17 @@ class Api
 
     protected function getAnyResult($result)
     {
-        return simplexml_load_string(
+        $resultWithNs = simplexml_load_string(
             $result->ProcessOperationResult->Result->any,
             null,
             null,
             $this->ietNs
         );
+        if (empty($resultWithNs)) {
+            return simplexml_load_string($result->ProcessOperationResult->Result->any);
+        }
+
+        return $resultWithNs;
     }
 
     protected function createAnyXml($string)
