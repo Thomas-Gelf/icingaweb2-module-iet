@@ -2,6 +2,10 @@
 
 namespace Icinga\Module\Iet;
 
+use ipl\Html\Error;
+use ipl\Html\Html;
+use ipl\Html\HtmlDocument;
+use ipl\Html\HtmlString;
 use RunTimeException;
 use SoapClient;
 use SoapFault;
@@ -314,6 +318,12 @@ class Api
         }
     }
 
+    /**
+     * @param $operation
+     * @param mixed|null $data
+     * @param string $version
+     * @return \SimpleXMLElement
+     */
     public function processOperation($operation, $data = null, $version = '1.0')
     {
         $body = $this->makeOperation($operation, $data, $version);
@@ -347,28 +357,45 @@ class Api
         }
     }
 
-    protected function makeOperation($operation, $data = null, $version = '2.0')
+    protected function makeXml($data)
+    {
+        if (is_array($data) || $data instanceof \stdClass) {
+            $result = new HtmlDocument();
+            foreach ($data as $name => $value) {
+                $result->add(Html::tag($name, $this->makeXml($data)));
+            }
+
+            return $result;
+        } elseif (\is_scalar($data)) {
+            return $data;
+        } else {
+            throw new \InvalidArgumentException(
+                "Cannot transfer this into XML: " . Error::getPhpTypeName($data)
+            );
+        }
+    }
+
+    protected function makeOperation($operation, $data = null, $version = '1.0')
     {
         if ($data === null) {
-            $data = "<root></root>";
+            $data = Html::tag('root');
+        } elseif (\is_string($data)) {
+            $data = new HtmlString($data);
+        } else {
+            $data = Html::tag('root', $this->makeXml($data));
         }
 
-        // Temporarily ugly, there is something going wrong with 'any' otherwise
-        $xml = '<ProcessOperation xmlns="http://www.iet-solutions.de/">'
-             . '<identId>%s</identId>'
-             . '<password>%s</password>'
-             . '<prozess>%s</prozess>'
-             . "<version>$version</version>"
-             . '<processData>%s</processData>'
-             . '</ProcessOperation>';
+        $xml = Html::tag('ProcessOperation', [
+            'xmlns' => 'http://www.iet-solutions.de/',
+        ], [
+            Html::tag('identId', $this->user),
+            Html::tag('password', $this->pass),
+            Html::tag('prozess', $operation),
+            Html::tag('version', $version),
+            Html::tag('processData', $data)
+        ]);
 
-        return $this->createAnyXml(sprintf(
-            $xml,
-            $this->user,
-            $this->pass,
-            $operation,
-            $data
-        ));
+        return $this->createAnyXml($xml->render());
     }
 
     protected function assertHasStatus($result)
