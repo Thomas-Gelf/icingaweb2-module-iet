@@ -9,7 +9,7 @@ class Ticket extends TicketHook
 {
     public function getPattern()
     {
-        return '/Operational Request ([^:]+):(\d+)/';
+        return '/(?:Operational Request|iET issue) ([^:]+):(\d+)/';
     }
 
     /**

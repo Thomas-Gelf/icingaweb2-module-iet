@@ -245,7 +245,7 @@ abstract class BaseMonitoringTicketForm extends Form
         }
 
         $instance = $this->getValue('iet_instance');
-        $ackMessage = "Operational Request $instance:$ietKey has been created";
+        $ackMessage = "iET issue $instance:$ietKey has been created";
 
         $cmd = new IcingaCommandPipe();
         if ($cmd->acknowledge("iET ($instance)", $ackMessage, $host, $service)) {
