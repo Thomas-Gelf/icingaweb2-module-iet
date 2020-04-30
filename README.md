@@ -74,6 +74,7 @@ You might optionally want to set some defaults in `[ICINGAWEB_CONFIGDIR]/modules
 sourcesystem = "Some Name"
 fe = "{icinga.vars.my_fe}"
 service = "AB02 My Service"
+; ticket_form = "MinimalMonitoringTicket"
 
 [links]
 Event Source = "https://icinga.example.com/icingaweb2/eventtracker/issue?uuid={uuid}"

@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Iet\ProvidedHook\Monitoring;
 
+use Icinga\Application\Config;
 use Icinga\Authentication\Auth;
 use Icinga\Module\Monitoring\Hook\HostActionsHook;
 use Icinga\Module\Monitoring\Object\Host;
@@ -19,7 +20,13 @@ class HostActions extends HostActionsHook
         $auth = Auth::getInstance();
         $urls = [];
 
-        if ($auth->hasPermission('iet/or/create')) {
+        if (Config::module('iet')->get('defaults', 'ticket_form')) {
+            if ($auth->hasPermission('iet/ticket/create')) {
+                $urls[mt('iet', 'Create Ticket')] = Url::fromPath('iet/ticket/create', [
+                    'host' => $host->host_name,
+                ]);
+            }
+        } elseif ($auth->hasPermission('iet/or/create')) {
             $urls[mt('iet', 'Create Operational Request')] = Url::fromPath('iet/or/create', [
                 'host' => $host->host_name,
             ]);
