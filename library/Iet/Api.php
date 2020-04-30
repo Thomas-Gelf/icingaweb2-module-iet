@@ -362,7 +362,7 @@ class Api
         if (is_array($data) || $data instanceof \stdClass) {
             $result = new HtmlDocument();
             foreach ($data as $name => $value) {
-                $result->add(Html::tag($name, $this->makeXml($data)));
+                $result->add(Html::tag($name, $this->makeXml($value)));
             }
 
             return $result;
