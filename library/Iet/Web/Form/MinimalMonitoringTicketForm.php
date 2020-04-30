@@ -31,7 +31,10 @@ class MinimalMonitoringTicketForm extends BaseMonitoringTicketForm
         $this->addElement('textarea', 'IncidentText', [
             'label'       => $this->translate('details'),
             'required'    => true,
-            'value'       => \strip_tags($this->getObjectDefault('details')),
+            'value'       => \strip_tags(
+                $this->getObjectDefault('title') . "\n" .
+                $this->getObjectDefault('details')
+            ),
             'rows'        => 8,
             'description' => $this->translate(
                 'Message body of this issue'
