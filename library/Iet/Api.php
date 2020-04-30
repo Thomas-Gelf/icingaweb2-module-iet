@@ -336,19 +336,22 @@ class Api
 
             if ($status !== 'No Error') {
                 $first = current($result); // CreateOR vs CreateOR and such woes
-                if (isset($first->ErrorMessage)) {
-                    throw new RuntimeException(sprintf(
+                if (\is_string($first)) {
+                    $message = "iET $status: $first";
+                } elseif (isset($first->ErrorMessage)) {
+                    $message = \sprintf(
                         'iET %s: %s',
                         $status,
                         $first->ErrorMessage
-                    ));
+                    );
                 } else {
-                    throw new RuntimeException(sprintf(
+                    $message = \sprintf(
                         'iET %s (unsupported result): %s',
                         $status,
                         var_export($result, 1)
-                    ));
+                    );
                 }
+                throw new RuntimeException($message);
             }
 
             return $result;
