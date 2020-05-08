@@ -45,6 +45,11 @@ ticket directly in your Winodws application.
 Configuration
 -------------
 
+Configuration takes place in `config.ini` (generic settings) and `instances.ini`
+(iET Instances - connection settings).
+
+### iET Instances
+
 Sample config for `[ICINGAWEB_CONFIGDIR]/modules/iet/instances.ini`:
 
 ```ini
@@ -67,14 +72,27 @@ namespace = "http://www.example.com/iETWebservices"
 ignore_certificate = true
 ```
 
-You might optionally want to set some defaults in `[ICINGAWEB_CONFIGDIR]/modules/iet/config.ini`:
+### Global settings
+
+Global default settings are to be found in `[ICINGAWEB_CONFIGDIR]/modules/iet/config.ini`.
+The `[implementation]` section allows to specify a specific Web Form implementation.
+For historic reasons this will default to "Creating Operational Requests" if none
+has been configured.
+
+The `[defaults]` section allows to pre-fill form values. Placeholders allow to
+pick properties from related (Icinga) objects.
+
+The `[links]` section is valid only for the `CreateOR` implementation and allows
+to ship a bunch of links with newly created tickets.
 
 ```ini
+[implementation]
+; ticket_form = "MinimalMonitoringTicket"
+
 [defaults]
 sourcesystem = "Some Name"
 fe = "{icinga.vars.my_fe}"
 service = "AB02 My Service"
-; ticket_form = "MinimalMonitoringTicket"
 
 [links]
 Event Source = "https://icinga.example.com/icingaweb2/eventtracker/issue?uuid={uuid}"
