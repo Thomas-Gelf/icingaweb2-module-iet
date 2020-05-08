@@ -125,7 +125,6 @@ class OrController extends Controller
 
                 return;
             }
-
         }
 
         $this->addTitle(
