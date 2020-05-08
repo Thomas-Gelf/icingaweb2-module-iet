@@ -33,12 +33,18 @@ class ImportSourceIetRaw extends ImportSourceHook
             $this->getSetting('version')
         );
 
-        $key = $this->getSetting('result_key');
-        if (\strlen($key)) {
-            if (isset($result->$key)) {
-                $result = $result->$key;
-            } else {
-                throw new InvalidArgumentException("There is no '$key' in the result");
+        $property = $this->getSetting('result_key');
+        if (\strlen($property)) {
+            foreach (\preg_split('/\./', $property) as $p) {
+                if (\property_exists($result, $p)) {
+                    $result = $result->$p;
+                } else {
+                    throw new \RuntimeException(sprintf(
+                        'Result has no "%s" property. Available keys: %s',
+                        $property,
+                        \implode(', ', \array_keys((array) $result))
+                    ));
+                }
             }
         }
 
@@ -116,7 +122,6 @@ class ImportSourceIetRaw extends ImportSourceHook
                 'multiOptions' => $ietInstances,
                 'required' => true,
                 'class'    => 'autosubmit',
-                'ignore'   => true,
             ]);
 
             $api = Config::getApi($form->getSentOrObjectSetting('iet_instance'));
@@ -140,7 +145,7 @@ class ImportSourceIetRaw extends ImportSourceHook
                 'This XML will be placed into the processData tag of the ProcessOperation method'
             ),
             'rows'        => 10,
-            'required'    => true,
+            'required'    => false,
         ]);
 
         $form->addElement('text', 'version', [
@@ -156,6 +161,7 @@ class ImportSourceIetRaw extends ImportSourceHook
             'label'       => $form->translate('Result Key'),
             'description' => $form->translate(
                 'Which property to pick from the result (e.g. "Result", "contents")'
+                . ' Nested properties like "Datasets.Server" are allowed'
             ),
         ]);
 
