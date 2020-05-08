@@ -20,7 +20,7 @@ class HostActions extends HostActionsHook
         $auth = Auth::getInstance();
         $urls = [];
 
-        if (Config::module('iet')->get('defaults', 'ticket_form')) {
+        if (Config::module('iet')->get('implementation', 'ticket_form')) {
             if ($auth->hasPermission('iet/ticket/create')) {
                 $urls[mt('iet', 'Create Ticket')] = Url::fromPath('iet/ticket/create', [
                     'host' => $host->host_name,

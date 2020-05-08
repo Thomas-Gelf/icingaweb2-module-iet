@@ -41,7 +41,7 @@ class TicketController extends Controller
         $this->addSingleTab($this->translate('Create Ticket'));
 
         // TODO: Not sure whether 'default' is the right place. Should we fill placeholders?
-        $implementation = $this->Config()->get('defaults', 'ticket_form');
+        $implementation = $this->Config()->get('implementation', 'ticket_form');
         if ($implementation === null) {
             throw new NotFoundError('No ticket_form has been defined');
         }
