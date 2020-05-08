@@ -386,7 +386,11 @@ class Api
         if ($data === null) {
             $data = Html::tag('root');
         } elseif (\is_string($data)) {
-            $data = new HtmlString($data);
+            if (\strlen(\trim($data)) === 0) {
+                $data = Html::tag('root');
+            } else {
+                $data = new HtmlString($data);
+            }
         } else {
             $data = Html::tag('root', $this->makeXml($data));
         }
