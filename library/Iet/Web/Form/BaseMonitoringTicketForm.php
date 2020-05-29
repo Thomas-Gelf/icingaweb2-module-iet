@@ -211,7 +211,7 @@ abstract class BaseMonitoringTicketForm extends Form
                 $stateName
             );
         } else {
-            $description = $object->host_output;
+            $longOutput = $object->host_output;
             $summary = sprintf(
                 '%s is %s',
                 $hostName,
@@ -222,8 +222,8 @@ abstract class BaseMonitoringTicketForm extends Form
         $defaults = [
             'title'   => $summary,
             'details' => $longOutput,
-            'icingahost'    => $hostname,
-            'icingaservice' => $hostname,
+            'icingahost'    => $hostName,
+            'icingaservice' => $hostName,
         ];
 
         return $defaults;
