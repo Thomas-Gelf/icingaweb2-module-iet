@@ -18,8 +18,8 @@ class MinimalMonitoringTicketForm extends BaseMonitoringTicketForm
             'value'       => $myUsername,
             // 'value'       => $this->getObjectDefault('UserID'),
         ]);
-        $this->addElement('text', 'eMail', [
-            'label'       => $this->translate('eMail'),
+        $this->addElement('text', 'Hostname', [
+            'label'       => $this->translate('Hostname'),
             'required'    => false,
             'value'       => $this->getObjectDefault('eMail'),
         ]);
