@@ -199,26 +199,31 @@ abstract class BaseMonitoringTicketForm extends Form
     private function getObjectDefaults()
     {
         $object = $this->object;
+        $hostName = $object->host_name;
+        $stateName = $this->getStateName();
         if ($object->getType() === 'service') {
-            $description = $object->service_output;
+            $serviceName = $object->service_description;
+            $longOutput = $object->service_output;
             $summary = sprintf(
                 '%s on %s is %s',
-                $object->service_description,
-                $object->host_name,
-                $this->getStateName()
+                $serviceName,
+                $hostName,
+                $stateName
             );
         } else {
             $description = $object->host_output;
             $summary = sprintf(
                 '%s is %s',
-                $object->host_name,
-                $this->getStateName()
+                $hostName,
+                $stateName
             );
         }
 
         $defaults = [
-            'title'     => $summary,
-            'details' => $description,
+            'title'   => $summary,
+            'details' => $longOutput,
+            'icingahost'    => $hostname,
+            'icingaservice' => $hostname,
         ];
 
         return $defaults;
