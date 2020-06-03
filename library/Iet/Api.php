@@ -259,6 +259,9 @@ class Api
             if (\strlen($value) === 0) {
                 continue;
             }
+            // Replace escape Character (ANSI escape codes) - they cause problems
+            $value = \preg_replace('/\e/', '[ESC]', $value);
+
             $xml .= "<$key>" . $this->escape($value) . "</$key>\n";
         }
 
