@@ -137,6 +137,7 @@ abstract class BaseOperationalRequestForm extends Form
     {
         $setting = WebConfig::module('iet')->get('defaults', $property);
         if ($setting !== null) {
+            $setting = $this->fillPlaceholders($setting);
             if ($enum !== null) {
                 if ($idx = \array_search($setting, $enum)) {
                     $setting = $idx;
@@ -149,7 +150,7 @@ abstract class BaseOperationalRequestForm extends Form
         if ($setting === null) {
             return $default;
         } else {
-            return $this->fillPlaceholders($setting);
+            return $setting;
         }
     }
 
