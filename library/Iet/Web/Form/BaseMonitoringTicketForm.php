@@ -137,6 +137,10 @@ abstract class BaseMonitoringTicketForm extends Form
             $this->getValues(),
             $this->ietProcessVersion
         );
+        if (isset($key->Result)) {
+            // Hint: this is not generic, workaround for special SimpleXML
+            $key = (string) $key->Result;
+        }
         try {
             $this->ack($key);
         } catch (Exception $e) {
@@ -211,6 +215,7 @@ abstract class BaseMonitoringTicketForm extends Form
                 $stateName
             );
         } else {
+            $serviceName = null;
             $longOutput = $object->host_output;
             $summary = sprintf(
                 '%s is %s',
@@ -220,10 +225,11 @@ abstract class BaseMonitoringTicketForm extends Form
         }
 
         $defaults = [
+            'state'   => $stateName,
             'title'   => $summary,
             'details' => $longOutput,
             'icingahost'    => $hostName,
-            'icingaservice' => $hostName,
+            'icingaservice' => $serviceName,
         ];
 
         return $defaults;
