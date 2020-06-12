@@ -206,7 +206,7 @@ abstract class BaseOperationalRequestForm extends Form
         foreach (WebConfig::module('iet')->getSection('links') as $name => $value) {
             $link = $this->fillPlaceholders($value);
             if (\strlen($link) > 0) {
-                $this->api->addLinkToOR($id, $name, $this->fillPlaceholders($value));
+                $this->api->addLinkToOR($id, $name, $link);
             }
         }
     }
