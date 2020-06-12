@@ -6,12 +6,16 @@ use Icinga\Authentication\Auth;
 
 class MinimalMonitoringTicketForm extends BaseMonitoringTicketForm
 {
-    protected $ietProcessName = 'CreateNewIncident';
+    /** @var string I would prefer to see 'CreateNewIncident' or similar */
+    protected $ietProcessName = 'icingaCreateUserAction';
 
     protected function addMessageDetails()
     {
         $myUsername = Auth::getInstance()->getUser()->getUserName();
 
+        $this->addElement('hidden', 'Action', [
+            'value' => 'createIncident'
+        ]);
         $this->addElement('text', 'UserID', [
             'label'       => $this->translate('UserID'),
             'required'    => false,
@@ -21,18 +25,30 @@ class MinimalMonitoringTicketForm extends BaseMonitoringTicketForm
         $this->addElement('text', 'Hostname', [
             'label'       => $this->translate('Hostname'),
             'required'    => false,
-            'value'       => $this->getObjectDefault('eMail'),
+            'value'       => $this->getObjectDefault('icingahost'),
         ]);
-        $this->addElement('text', 'Group', [
-            'label'       => $this->translate('Group'),
+        $this->addElement('text', 'Monitor', [
+            'label'       => $this->translate('Object / Service'),
             'required'    => false,
-            'value'       => $this->getObjectDefault('Group'),
+            'value'       => $this->getObjectDefault('icingaservice'),
         ]);
-        $this->addElement('textarea', 'IncidentText', [
+        $this->addElement('text', 'Priority', [
+            'label'       => $this->translate('Priority'),
+            'required'    => false,
+            'value'       => $this->getObjectDefault('state'),
+        ]);
+        $this->addElement('text', 'ShortDesc', [
+            'label'       => $this->translate('Summary'),
+            'required'    => true,
+            'value'       => \strip_tags(
+                $this->getObjectDefault('title')
+            ),
+            'description' => $this->translate('Short problem summary'),
+        ]);
+        $this->addElement('textarea', 'Desc', [
             'label'       => $this->translate('details'),
             'required'    => true,
             'value'       => \strip_tags(
-                $this->getObjectDefault('title') . "\n" .
                 $this->getObjectDefault('details')
             ),
             'rows'        => 8,
