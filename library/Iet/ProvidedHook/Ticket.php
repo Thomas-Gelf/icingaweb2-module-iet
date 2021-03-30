@@ -25,7 +25,11 @@ class Ticket extends TicketHook
             return $match[0];
         }
         $or = $match[2];
-        $url = sprintf('iet://%s/displayrecord?or=%d', $host, $or);
+        if ($url = Config::getSetting($instance, 'ticket_url')) {
+            $url = preg_replace('/<ticket>/', urlencode($or), $url);
+        } else {
+            $url = sprintf('iet://%s/displayrecord?or=%d', $host, $or);
+        }
         $title = htmlspecialchars(mt('iet', 'Open Operational Request in iET'));
         $link = sprintf(
             '<a href="%s" target="_blank" title="%s">%d</a>',

@@ -57,6 +57,8 @@ Sample config for `[ICINGAWEB_CONFIGDIR]/modules/iet/instances.ini`:
 host = "iet.example.com"
 webservice = "https://iet.example.com/iETWebservices"
 namespace = "http://www.example.com/iETWebservices"
+; Ticket Url, defaults to iet://<host>/displayrecord?or=%d
+; ticket_url = https://iet.example.com/weblink/Open/Form/IT%20INQUIRY%20MANAGEMENT/sv_inquiry.inquiry_id/<ticket>
 username = "icinga"
 password = "***"
 ; for certificate-based client authentication against the iET Web Service:
