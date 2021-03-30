@@ -35,7 +35,7 @@ class ImportSourceIetRaw extends ImportSourceHook
 
         $property = $this->getSetting('result_key');
         if (\strlen($property)) {
-            foreach (\preg_split('/\./', $property) as $p) {
+            foreach (explode('.', $property) as $p) {
                 if (\property_exists($result, $p)) {
                     $result = $result->$p;
                 } else {
@@ -176,7 +176,5 @@ class ImportSourceIetRaw extends ImportSourceHook
             ],
             'required' => true,
         ]);
-
-        return;
     }
 }

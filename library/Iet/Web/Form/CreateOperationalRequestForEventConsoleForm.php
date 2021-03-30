@@ -103,9 +103,9 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
     {
         if (\strlen($string) <= $length) {
             return $string;
-        } else {
-            return \substr($string, 0, $length) . '...';
         }
+
+        return \substr($string, 0, $length) . '...';
     }
 
     protected function addLinks($id)

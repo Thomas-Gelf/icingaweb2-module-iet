@@ -50,14 +50,10 @@ class Config
     {
         $config = '[ICINGAWEB_CONFIGDIR]/modules/iet/instances.ini';
         if ($property === null) {
-            throw new ConfigurationError(
-                "There is no [$name] in  $config"
-            );
-        } else {
-            throw new ConfigurationError(
-                "[$name] has no $property in $config"
-            );
+            throw new ConfigurationError("There is no [$name] in  $config");
         }
+
+        throw new ConfigurationError("[$name] has no $property in $config");
     }
 
     /**
@@ -177,10 +173,12 @@ class Config
     {
         if (is_bool($value)) {
             return $value;
-        } elseif (is_string($value)) {
+        }
+        if (is_string($value)) {
             if (in_array($value, ['y', 'yes', 'true', '1'])) {
                 return true;
-            } elseif (in_array($value, ['n', 'no', 'false', '0'])) {
+            }
+            if (in_array($value, ['n', 'no', 'false', '0'])) {
                 return false;
             }
         }

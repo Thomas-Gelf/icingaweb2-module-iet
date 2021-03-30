@@ -42,9 +42,9 @@ class IcingaCommandPipe
     {
         if ($service === null) {
             return $this->getHostObject($hostname);
-        } else {
-            return $this->getServiceObject($hostname, $service);
         }
+
+        return $this->getServiceObject($hostname, $service);
     }
 
     protected function getHostObject($hostname)

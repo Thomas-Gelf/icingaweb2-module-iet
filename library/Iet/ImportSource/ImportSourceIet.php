@@ -89,7 +89,5 @@ class ImportSourceIet extends ImportSourceHook
             'multiOptions' => $categories,
             'required'    => true,
         ));
-
-        return;
     }
 }

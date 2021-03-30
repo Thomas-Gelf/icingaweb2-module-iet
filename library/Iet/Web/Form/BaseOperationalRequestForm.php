@@ -149,9 +149,9 @@ abstract class BaseOperationalRequestForm extends Form
 
         if ($setting === null) {
             return $default;
-        } else {
-            return $setting;
         }
+
+        return $setting;
     }
 
     protected function prefixEnumValueWithName(&$enum)
@@ -239,9 +239,9 @@ abstract class BaseOperationalRequestForm extends Form
 
         if (empty($value)) {
             return $default;
-        } else {
-            return $value;
         }
+
+        return $value;
     }
 
     protected function getCacheDir()
@@ -262,8 +262,8 @@ abstract class BaseOperationalRequestForm extends Form
         $file =  $this->getCacheDir() . "/iet-$key.json";
         if (file_exists($file)) {
             return (array) \json_decode(\file_get_contents($file));
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

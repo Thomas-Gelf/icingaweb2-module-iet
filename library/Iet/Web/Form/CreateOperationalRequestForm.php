@@ -72,9 +72,9 @@ class CreateOperationalRequestForm extends BaseOperationalRequestForm
         $defaults = $this->getObjectDefaults();
         if (\array_key_exists($key, $defaults)) {
             return $defaults[$key];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     private function getObjectDefaults()
@@ -110,8 +110,8 @@ class CreateOperationalRequestForm extends BaseOperationalRequestForm
         $object = $this->object;
         if ($object->getType() === 'service') {
             return \strtoupper(Service::getStateText($object->service_state));
-        } else {
-            return \strtoupper(Host::getStateText($object->host_state));
         }
+
+        return \strtoupper(Host::getStateText($object->host_state));
     }
 }

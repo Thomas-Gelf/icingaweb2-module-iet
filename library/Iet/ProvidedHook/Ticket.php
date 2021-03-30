@@ -34,6 +34,12 @@ class Ticket extends TicketHook
             $or
         );
 
-        return str_replace($or, $link, str_replace("$instance:", '', $match[0]));
+        return str_replace([
+            "$instance:",
+            $or,
+        ], [
+            '',
+            $link,
+        ], $match[0]);
     }
 }

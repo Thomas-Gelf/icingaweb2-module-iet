@@ -83,9 +83,9 @@ abstract class BaseMonitoringTicketForm extends Form
 
             if ($this->hasBeenSent()) {
                 return Config::getApi($this->getElement('iet_instance')->getValue());
-            } else {
-                return Config::getApi();
             }
+
+            return Config::getApi();
         } catch (ConfigurationError $e) {
             $this->getElement('iet_instance')->addMessage($e->getMessage());
 
@@ -116,9 +116,9 @@ abstract class BaseMonitoringTicketForm extends Form
 
         if ($setting === null) {
             return $default;
-        } else {
-            return $this->fillPlaceholders($setting);
         }
+
+        return $this->fillPlaceholders($setting);
     }
 
     protected function prefixEnumValueWithName(&$enum)
@@ -180,9 +180,9 @@ abstract class BaseMonitoringTicketForm extends Form
 
         if (empty($value)) {
             return $default;
-        } else {
-            return $value;
         }
+
+        return $value;
     }
 
     protected function fillPlaceholders($string)
@@ -195,9 +195,9 @@ abstract class BaseMonitoringTicketForm extends Form
         $defaults = $this->getObjectDefaults();
         if (\array_key_exists($key, $defaults)) {
             return $defaults[$key];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     private function getObjectDefaults()
@@ -240,9 +240,9 @@ abstract class BaseMonitoringTicketForm extends Form
         $object = $this->object;
         if ($object->getType() === 'service') {
             return \strtoupper(Service::getStateText($object->service_state));
-        } else {
-            return \strtoupper(Host::getStateText($object->host_state));
         }
+
+        return \strtoupper(Host::getStateText($object->host_state));
     }
 
     protected function ack($ietKey)

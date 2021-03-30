@@ -22,11 +22,12 @@ class Controller extends CompatController
         try {
             if (is_array($callable)) {
                 return call_user_func($callable);
-            } elseif (is_string($callable)) {
-                return call_user_func([$this, $callable]);
-            } else {
-                return $callable();
             }
+            if (is_string($callable)) {
+                return call_user_func([$this, $callable]);
+            }
+
+            return $callable();
         } catch (Exception $e) {
             $this->content()->add($e->getMessage());
             $this->content()->add(Html::tag('pre', null, $e->getTraceAsString()));
