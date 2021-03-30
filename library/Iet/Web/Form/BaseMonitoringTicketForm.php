@@ -6,6 +6,7 @@ use Exception;
 use gipfl\Translation\TranslationHelper;
 use Icinga\Application\Config as WebConfig;
 use Icinga\Application\Logger;
+use Icinga\Authentication\Auth;
 use Icinga\Exception\ConfigurationError;
 use Icinga\Module\Eventtracker\ConfigHelper;
 use Icinga\Module\Iet\Config;
@@ -256,10 +257,10 @@ abstract class BaseMonitoringTicketForm extends Form
         }
 
         $instance = $this->getValue('iet_instance');
-        $ackMessage = "iET issue $instance:$ietKey has been created";
+        $ackMessage = "iET ($instance) issue $instance:$ietKey has been created";
 
         $cmd = new IcingaCommandPipe();
-        if ($cmd->acknowledge("iET ($instance)", $ackMessage, $host, $service)) {
+        if ($cmd->acknowledge(Auth::getInstance()->getUser()->getUsername(), $ackMessage, $host, $service)) {
             Logger::info("Problem has been acknowledged for $ietKey");
         }
     }
