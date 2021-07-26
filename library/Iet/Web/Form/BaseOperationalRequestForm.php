@@ -4,6 +4,7 @@ namespace Icinga\Module\Iet\Web\Form;
 
 use Exception;
 use gipfl\Translation\TranslationHelper;
+use gipfl\Web\Form;
 use Icinga\Application\Config as WebConfig;
 use Icinga\Application\Icinga;
 use Icinga\Application\Logger;
@@ -11,8 +12,6 @@ use Icinga\Authentication\Auth;
 use Icinga\Exception\ConfigurationError;
 use Icinga\Module\Iet\Config;
 use Icinga\Web\Notification;
-use ipl\Html\Form;
-use ipl\Html\FormDecorator\DdDtDecorator;
 
 abstract class BaseOperationalRequestForm extends Form
 {
@@ -25,7 +24,7 @@ abstract class BaseOperationalRequestForm extends Form
 
     public function __construct()
     {
-        $this->setDefaultElementDecorator(new DdDtDecorator());
+        // Compatibility
     }
 
     abstract protected function addMessageDetails();

@@ -4,6 +4,7 @@ namespace Icinga\Module\Iet\Web\Form;
 
 use Exception;
 use gipfl\Translation\TranslationHelper;
+use gipfl\Web\Form;
 use Icinga\Application\Config as WebConfig;
 use Icinga\Application\Logger;
 use Icinga\Authentication\Auth;
@@ -15,8 +16,6 @@ use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\MonitoredObject;
 use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Web\Notification;
-use ipl\Html\Form;
-use ipl\Html\FormDecorator\DdDtDecorator;
 
 abstract class BaseMonitoringTicketForm extends Form
 {
@@ -35,7 +34,6 @@ abstract class BaseMonitoringTicketForm extends Form
     public function __construct(MonitoredObject $object)
     {
         $this->object = $object;
-        $this->setDefaultElementDecorator(new DdDtDecorator());
     }
 
     abstract protected function addMessageDetails();
