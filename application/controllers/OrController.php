@@ -93,7 +93,7 @@ class OrController extends Controller
             $this->redirectNow($url);
         })->setObject($object)->handleRequest($this->getServerRequest());
 
-        $this->addForm($form);
+        $this->content()->add($form);
     }
 
     protected function showIssueForm()
@@ -141,14 +141,7 @@ class OrController extends Controller
             ]));
         })->handleRequest($this->getServerRequest());
 
-        $this->addForm($form);
-    }
-
-    protected function addForm(Form $form)
-    {
-        $wrapper = Html::tag('div', ['class' => 'icinga-module module-director']);
-        $wrapper->add($form);
-        $this->content()->add($wrapper);
+        $this->content()->add($form);
     }
 
     protected function titleSuffix($host, $service)
