@@ -20,6 +20,12 @@ abstract class BaseOperationalRequestForm extends Form
     /** @@var \Icinga\Module\Iet\Api */
     protected $api;
 
+    protected $defaultFe;
+
+    protected $defaultWorkLogTopic;
+
+    protected $defaultWorkLogEntry;
+
     private $cacheDir;
 
     public function __construct()
@@ -71,7 +77,7 @@ abstract class BaseOperationalRequestForm extends Form
         }
 
         $defaultSourceSystem = $this->getDefaultFromConfig('sourcesystem', $sourceSystems);
-        $defaultFe = $this->getDefaultFromConfig('fe', $allGroups);
+        $defaultFe = $this->defaultFe ?: $this->getDefaultFromConfig('fe', $allGroups);
 
         $defaultReportingGroup = $this->api->getReportersDefaultGroup($myUsername);
         $this->addElement('select', 'sourcesystemid', [
@@ -118,12 +124,14 @@ abstract class BaseOperationalRequestForm extends Form
         $this->addElement('text', 'topic', [
             'label'    => $this->translate('Worklog Topic'),
             'ignore'   => true,
+            'value'    => $this->defaultWorkLogTopic,
             'required' => false,
         ]);
         $this->addElement('textarea', 'entry', [
             'label'    => $this->translate('Worklog Entry'),
-            'rows'        => 8,
+            'rows'        => 6,
             'ignore'   => true,
+            'value'    => $this->defaultWorkLogEntry,
             'required' => false,
         ]);
 

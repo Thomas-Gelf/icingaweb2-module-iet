@@ -13,13 +13,18 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
     /** @var SetOfIssues */
     protected $issues;
 
+    private $defaultMessage;
+
+    private $defaultTitle;
+
     public function __construct(SetOfIssues $issues)
     {
         $this->issues = $issues;
         parent::__construct();
+        $this->prepareOrValues();
     }
 
-    protected function addMessageDetails()
+    protected function prepareOrValues()
     {
         $issues = $this->issues->getIssues();
         if (\count($issues) === 1) {
@@ -79,24 +84,30 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
             $title .= "$host : $object";
         }
 
+        $this->defaultTitle = $title;
+        $this->defaultMessage = $message;
+    }
+
+    protected function addMessageDetails()
+    {
         $this->addElement('text', 'title1', [
             'label'       => $this->translate('Title'),
             'required'    => true,
-            'value'       => $title,
+            'value'       => $this->defaultTitle,
             'description' => $this->translate(
                 'Summary of this incident'
             ),
         ]);
 
-        $this->addElement('textarea', 'details', array(
+        $this->addElement('textarea', 'details', [
             'label'       => $this->translate('details'),
             'required'    => true,
-            'value'       => $message,
-            'rows'        => 8,
+            'value'       => $this->defaultMessage,
+            'rows'        => 6,
             'description' => $this->translate(
                 'Message body of this issue'
             ),
-        ));
+        ]);
     }
 
     protected function shorten($string, $length)
