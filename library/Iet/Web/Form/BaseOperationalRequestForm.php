@@ -141,6 +141,12 @@ abstract class BaseOperationalRequestForm extends Form
             'value'    => $this->defaultWorkLogEntry,
             'required' => false,
         ]);
+        if (strlen($this->getValue('entry')) > 0 && strlen($this->getValue('topic')) === 0) {
+            $this->getElement('topic')->addMessage($this->translate('Topic is required for worklog entries'));
+            $this->addHidden('fake_error', null, [
+                'required' => true
+            ]);
+        }
 
         $this->addElement('submit', 'submit', [
             'label' => $this->translate('Create')
