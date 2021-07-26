@@ -54,8 +54,15 @@ abstract class BaseOperationalRequestForm extends Form
                 $this->api = Config::getApi();
             }
         } catch (ConfigurationError $e) {
-            throw $e;
-            $this->addError($e);
+            if (! $this->hasElement('iet_instance')) {
+                $this->addElement('select', 'iet_instance', [
+                    'label' => $this->translate('iET Instance'),
+                    'multiOptions' => [],
+                    'required' => true,
+                    'ignore'   => true,
+                ]);
+            }
+            $this->getElement('iet_instance')->addMessage($e->getMessage());
             $this->submitLabel = false;
 
             return;
