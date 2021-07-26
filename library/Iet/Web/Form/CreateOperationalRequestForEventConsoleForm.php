@@ -61,6 +61,7 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
                 $i++;
                 $message = "$i) $message";
             }
+            unset($message);
 
             $message = \implode("\n", $messages);
             $hosts = \array_keys($hosts);
