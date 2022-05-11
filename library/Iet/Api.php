@@ -245,6 +245,19 @@ class Api
         $this->processOperation('AddLinkToOR', $xml);
     }
 
+    public function attachFileToOR($id, $filename, $data)
+    {
+        $params = [
+            'ID'         => $id,
+            'Filename'   => $filename,
+            'FileBase64' => base64_encode($data)
+        ];
+
+        $xml = "<root>\n" . $this->paramsToXml($params) . "</root>\n";
+
+        $this->processOperation('AttachFileTo_OR_SOR_RFI', $xml);
+    }
+
     public function getOR($id)
     {
         $xml = "<OR>\n" . $this->paramsToXml(['id' => $id]) . "</OR>\n";
