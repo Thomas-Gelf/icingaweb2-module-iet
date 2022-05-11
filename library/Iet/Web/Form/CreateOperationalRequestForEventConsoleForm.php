@@ -5,8 +5,10 @@ namespace Icinga\Module\Iet\Web\Form;
 use Icinga\Application\Config as WebConfig;
 use Icinga\Module\Eventtracker\ConfigHelper;
 use Icinga\Module\Eventtracker\DbFactory;
+use Icinga\Module\Eventtracker\File;
 use Icinga\Module\Eventtracker\Issue;
 use Icinga\Module\Eventtracker\SetOfIssues;
+use ipl\Stdlib\Str;
 
 class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequestForm
 {
@@ -162,6 +164,38 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
             $issue->setTicketRef($ietKey);
             $issue->setOwner($this->getValue('rep'));
             $issue->storeToDb(DbFactory::db());
+        }
+    }
+
+    protected function addFiles($id): void
+    {
+        $uuids = [];
+        $checksums = [];
+
+        foreach ($this->getElement('files')->getValue() as $value) {
+            list($uuid, $checksum) = Str::symmetricSplit($value, '!', 2);
+            $uuids[] = hex2bin($uuid);
+            $checksums[] = hex2bin($checksum);
+        }
+
+        foreach (File::loadByIssueUuidsAndChecksums($uuids, $checksums, DbFactory::db()) as $file) {
+            $this->api->attachFileToOR($id, $file->get('filename'), $file->get('data'));
+        }
+    }
+
+    protected function provideFiles(): iterable
+    {
+        $dedup = [];
+
+        foreach (File::loadAllBySetOfIssues($this->issues, DbFactory::db()) as $file) {
+            $key = bin2hex($file->get('checksum')) . $file->get('filename');
+            if (isset($dedup[$key])) {
+                continue;
+            }
+
+            yield $file;
+
+            $dedup[$key] = true;
         }
     }
 }

@@ -10,7 +10,9 @@ use Icinga\Application\Icinga;
 use Icinga\Application\Logger;
 use Icinga\Authentication\Auth;
 use Icinga\Exception\ConfigurationError;
+use Icinga\Module\Eventtracker\File;
 use Icinga\Module\Iet\Config;
+use Icinga\Util\Format;
 use Icinga\Web\Notification;
 
 abstract class BaseOperationalRequestForm extends Form
@@ -148,6 +150,25 @@ abstract class BaseOperationalRequestForm extends Form
             ]);
         }
 
+        $files = $this->provideFiles();
+        if (! empty($files)) {
+            $options = [];
+            foreach ($files as $file) {
+                $key = sprintf(
+                    '%s!%s', bin2hex($file->get('issue_uuid')), bin2hex($file->get('checksum'))
+                );
+                $options[$key] = sprintf(
+                    '%s (%s)', $file->get('filename'), Format::bytes($file->get('size'))
+                );
+            }
+
+            $this->addElement('multiselect', 'files', [
+                'label'   => $this->translate('Files'),
+                'options' => $options,
+                'value'   => array_keys($options)
+            ]);
+        }
+
         $this->addElement('submit', 'submit', [
             'label' => $this->translate('Create')
         ]);
@@ -213,6 +234,7 @@ abstract class BaseOperationalRequestForm extends Form
                 ]);
             }
             $this->addLinks($key);
+            $this->addFiles($key);
         } catch (Exception $e) {
             Logger::error($e->getMessage());
             throw $e;
@@ -229,6 +251,18 @@ abstract class BaseOperationalRequestForm extends Form
                 $this->api->addLinkToOR($id, $name, $link);
             }
         }
+    }
+
+    protected function addFiles($id): void
+    {
+    }
+
+    /**
+     * @return File[]
+     */
+    protected function provideFiles(): iterable
+    {
+        return [];
     }
 
     protected function fillPlaceholders($string)
