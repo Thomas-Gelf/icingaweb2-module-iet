@@ -183,19 +183,20 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
         }
     }
 
-    protected function provideFiles(): iterable
+    protected function provideFiles(): array
     {
-        $dedup = [];
+        $files = [];
 
         foreach (File::loadAllBySetOfIssues($this->issues, DbFactory::db()) as $file) {
             $key = bin2hex($file->get('checksum')) . $file->get('filename');
-            if (isset($dedup[$key])) {
+
+            if (isset($files[$key])) {
                 continue;
             }
 
-            yield $file;
-
-            $dedup[$key] = true;
+            $files[$key] = $file;
         }
+
+        return array_values($files);
     }
 }

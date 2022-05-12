@@ -263,7 +263,7 @@ abstract class BaseOperationalRequestForm extends Form
     /**
      * @return File[]
      */
-    protected function provideFiles(): iterable
+    protected function provideFiles(): array
     {
         return [];
     }
