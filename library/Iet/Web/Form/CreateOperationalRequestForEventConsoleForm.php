@@ -172,6 +172,9 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
         $uuids = [];
         $checksums = [];
 
+        if (! $this->hasElement('files')) {
+            return;
+        }
         foreach ($this->getElement('files')->getValue() as $value) {
             list($uuid, $checksum) = Str::symmetricSplit($value, '!', 2);
             $uuids[] = hex2bin($uuid);
