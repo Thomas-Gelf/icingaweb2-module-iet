@@ -204,13 +204,25 @@ abstract class BaseMonitoringTicketForm extends Form
         $object = $this->object;
         $hostName = $object->host_name;
         $stateName = $this->getStateName();
+        if ($object instanceof Service) {
+            $host = $object->getHost();
+        } else {
+            $host = $object;
+        }
+
+        $hostLabel = $hostName;
+        if ($address = $host->host_address) {
+            if ($address !== $hostLabel) {
+                $hostLabel = "$hostLabel ($address)";
+            }
+        }
         if ($object->getType() === 'service') {
             $serviceName = $object->service_description;
             $longOutput = $object->service_output;
             $summary = sprintf(
                 '%s on %s is %s',
                 $serviceName,
-                $hostName,
+                $hostLabel,
                 $stateName
             );
         } else {
@@ -218,7 +230,7 @@ abstract class BaseMonitoringTicketForm extends Form
             $longOutput = $object->host_output;
             $summary = sprintf(
                 '%s is %s',
-                $hostName,
+                $hostLabel,
                 $stateName
             );
         }
