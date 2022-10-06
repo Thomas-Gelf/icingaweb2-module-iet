@@ -32,6 +32,11 @@ class MinimalMonitoringTicketForm extends BaseMonitoringTicketForm
             'required'    => true,
             'value'       => $this->getObjectDefault('icingaservice') ?: 'host problem',
         ]);
+        $this->addElement('text', 'Ticketgroup', [
+            'label'       => $this->translate('Ticketgroup'),
+            'required'    => false,
+            'value'       => $this->getObjectDefault('Ticketgroup'),
+        ]);
         $this->addElement('text', 'Priority', [
             'label'       => $this->translate('Priority'),
             'required'    => false,
