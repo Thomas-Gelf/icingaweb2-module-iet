@@ -13,9 +13,9 @@ use Icinga\Module\Iet\Web\Controller;
 use Icinga\Module\Iet\Web\Form\CreateOperationalRequestForEventConsoleForm;
 use Icinga\Module\Iet\Web\Form\CreateOperationalRequestForm;
 use Icinga\Module\Iet\Web\Widget\OperationalRequestDetails;
+use Icinga\Module\Monitoring\Backend\MonitoringBackend;
 use Icinga\Module\Monitoring\Object\Host;
 use Icinga\Module\Monitoring\Object\Service;
-use Icinga\Module\Monitoring\Backend;
 use ipl\Html\Form;
 use ipl\Html\Html;
 
@@ -75,10 +75,10 @@ class OrController extends Controller
         $params = ['host' => $host];
         if ($service) {
             $params['service'] = $service;
-            $object = new Service(Backend::instance(), $host, $service);
+            $object = new Service(MonitoringBackend::instance(), $host, $service);
             $url = Url::fromPath('monitoring/service/show', $params);
         } else {
-            $object = new Host(Backend::instance(), $host);
+            $object = new Host(MonitoringBackend::instance(), $host);
             $url = Url::fromPath('monitoring/host/show', $params);
         }
 

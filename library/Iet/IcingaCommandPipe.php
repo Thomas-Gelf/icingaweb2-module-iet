@@ -2,7 +2,7 @@
 
 namespace Icinga\Module\Iet;
 
-use Icinga\Module\Monitoring\Backend;
+use Icinga\Module\Monitoring\Backend\MonitoringBackend;
 use Icinga\Module\Monitoring\Command\Object\AcknowledgeProblemCommand;
 use Icinga\Module\Monitoring\Command\Transport\CommandTransport;
 use Icinga\Module\Monitoring\Exception\CommandTransportException;
@@ -49,7 +49,7 @@ class IcingaCommandPipe
 
     protected function getHostObject($hostname)
     {
-        $host = new Host(Backend::instance(), $hostname);
+        $host = new Host(MonitoringBackend::instance(), $hostname);
 
         if ($host->fetch() === false) {
             throw new RuntimeException('No such host found: %s', $hostname);
@@ -60,7 +60,7 @@ class IcingaCommandPipe
 
     protected function getServiceObject($hostname, $service)
     {
-        $service = new Service(Backend::instance(), $hostname, $service);
+        $service = new Service(MonitoringBackend::instance(), $hostname, $service);
 
         if ($service->fetch() === false) {
             throw new RuntimeException(
