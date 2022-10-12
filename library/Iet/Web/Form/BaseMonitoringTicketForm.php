@@ -206,6 +206,7 @@ abstract class BaseMonitoringTicketForm extends Form
         $stateName = $this->getStateName();
         if ($object instanceof Service) {
             $host = $object->getHost();
+            $host->fetch();
         } else {
             $host = $object;
         }
