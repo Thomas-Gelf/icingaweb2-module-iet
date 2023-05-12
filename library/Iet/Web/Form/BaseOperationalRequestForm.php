@@ -19,7 +19,7 @@ abstract class BaseOperationalRequestForm extends Form
 {
     use TranslationHelper;
 
-    /** @@var \Icinga\Module\Iet\Api */
+    /** @var \Icinga\Module\Iet\Api */
     protected $api;
 
     protected $defaultFe;
@@ -158,10 +158,14 @@ abstract class BaseOperationalRequestForm extends Form
             $options = [];
             foreach ($files as $file) {
                 $key = sprintf(
-                    '%s!%s', bin2hex($file->get('issue_uuid')), bin2hex($file->get('checksum'))
+                    '%s!%s',
+                    bin2hex($file->get('issue_uuid')),
+                    bin2hex($file->get('checksum'))
                 );
                 $options[$key] = sprintf(
-                    '%s (%s)', $file->get('filename'), Format::bytes($file->get('size'))
+                    '%s (%s)',
+                    $file->get('filename'),
+                    Format::bytes($file->get('size'))
                 );
             }
 
