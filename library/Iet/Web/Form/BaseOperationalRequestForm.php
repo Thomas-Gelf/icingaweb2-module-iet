@@ -70,7 +70,11 @@ abstract class BaseOperationalRequestForm extends Form
             return;
         }
 
-        $myUsername = Auth::getInstance()->getUser()->getUserName();
+        if ($username = $this->getSentValue('rep')) {
+            $myUsername = $username;
+        } else {
+            $myUsername = Auth::getInstance()->getUser()->getUserName();
+        }
         // $reporters = $this->api->listReporters();
         // $this->prefixEnumValueWithName($reporters);
         if (null === ($allGroups = $this->getCached('all-groups'))) {
