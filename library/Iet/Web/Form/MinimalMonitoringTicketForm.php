@@ -35,7 +35,7 @@ class MinimalMonitoringTicketForm extends BaseMonitoringTicketForm
         $this->addElement('text', 'Ticketgroup', [
             'label'       => $this->translate('Ticketgroup'),
             'required'    => false,
-            'value'       => $this->getObjectDefault('Ticketgroup'),
+            'value'       => $this->getDefaultFromConfig('Ticketgroup'),
         ]);
         $this->addElement('text', 'Priority', [
             'label'       => $this->translate('Priority'),
