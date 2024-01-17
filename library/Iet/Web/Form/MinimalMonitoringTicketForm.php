@@ -12,6 +12,7 @@ class MinimalMonitoringTicketForm extends BaseMonitoringTicketForm
     protected function addMessageDetails()
     {
         $myUsername = Auth::getInstance()->getUser()->getUserName();
+        $helper = $this->helper;
 
         $this->addElement('hidden', 'Action', [
             'value' => 'createIncident'
@@ -25,12 +26,12 @@ class MinimalMonitoringTicketForm extends BaseMonitoringTicketForm
         $this->addElement('text', 'Hostname', [
             'label'       => $this->translate('Hostname'),
             'required'    => false,
-            'value'       => $this->getObjectDefault('icingahost'),
+            'value'       => $helper->getDefault('icingahost'),
         ]);
         $this->addElement('text', 'Monitor', [
             'label'       => $this->translate('Object / Service'),
             'required'    => true,
-            'value'       => $this->getObjectDefault('icingaservice') ?: 'host problem',
+            'value'       => $helper->getDefault('icingaservice', 'host problem'),
         ]);
         $this->addElement('text', 'Ticketgroup', [
             'label'       => $this->translate('Ticketgroup'),
@@ -40,26 +41,20 @@ class MinimalMonitoringTicketForm extends BaseMonitoringTicketForm
         $this->addElement('text', 'Priority', [
             'label'       => $this->translate('Priority'),
             'required'    => false,
-            'value'       => $this->getObjectDefault('state'),
+            'value'       => $helper->getDefault('state'),
         ]);
         $this->addElement('text', 'ShortDesc', [
             'label'       => $this->translate('Summary'),
             'required'    => true,
-            'value'       => \strip_tags(
-                $this->getObjectDefault('title')
-            ),
+            'value'       => \strip_tags($helper->getDefault('title')),
             'description' => $this->translate('Short problem summary'),
         ]);
         $this->addElement('textarea', 'Desc', [
             'label'       => $this->translate('details'),
             'required'    => true,
-            'value'       => \strip_tags(
-                $this->getObjectDefault('details')
-            ),
+            'value'       => \strip_tags($helper->getDefault('details')),
             'rows'        => 8,
-            'description' => $this->translate(
-                'Message body of this issue'
-            ),
+            'description' => $this->translate('Message body of this issue'),
         ]);
     }
 }

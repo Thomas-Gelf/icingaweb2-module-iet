@@ -3,7 +3,9 @@
 namespace Icinga\Module\Iet\Controllers;
 
 use gipfl\IcingaWeb2\Url;
+use Icinga\Application\Modules\Module;
 use Icinga\Exception\NotFoundError;
+use Icinga\Module\Iet\IcingaDb\IcingaDbBackend;
 use Icinga\Module\Iet\Web\Controller;
 use Icinga\Module\Iet\Web\Form\BaseMonitoringTicketForm;
 use Icinga\Module\Monitoring\Backend\MonitoringBackend;
@@ -46,24 +48,40 @@ class TicketController extends Controller
             throw new NotFoundError('No ticket_form has been defined');
         }
         $class = "\\Icinga\\Module\\Iet\\Web\\Form\\${implementation}Form";
-        $params = ['host' => $host];
-        if ($service) {
-            $params['service'] = $service;
-            $object = new Service(MonitoringBackend::instance(), $host, $service);
-            $url = Url::fromPath('monitoring/service/show', $params);
+        if (Module::exists('icingadb')) {
+            $db = new IcingaDbBackend();
+            if ($service) {
+                $object = $db->getService($host, $service);
+                $url = Url::fromPath('icingadb/service', [
+                    'name'      => $service,
+                    'host.name' => $host,
+                ]);
+            } else {
+                $object = $db->getHost($host);
+                $url = Url::fromPath('icingadb/host', [
+                    'name' => $host,
+                ]);
+            }
         } else {
-            $object = new Host(MonitoringBackend::instance(), $host);
-            $url = Url::fromPath('monitoring/host/show', $params);
+            $params = ['host' => $host];
+            if ($service) {
+                $params['service'] = $service;
+                $object = new Service(MonitoringBackend::instance(), $host, $service);
+                $url = Url::fromPath('monitoring/service/show', $params);
+            } else {
+                $object = new Host(MonitoringBackend::instance(), $host);
+                $url = Url::fromPath('monitoring/host/show', $params);
+            }
+
+            if (! $object->fetch()) {
+                $this->content()->add(Html::tag('p', [
+                    'class' => 'error',
+                ], $this->translate('Monitored object has not been found')));
+                return;
+            }
         }
         /** @var BaseMonitoringTicketForm $form */
         $form = new $class($object);
-
-        if (! $object->fetch()) {
-            $this->content()->add(Html::tag('p', [
-                'class' => 'error',
-            ], $this->translate('Monitored object has not been found')));
-            return;
-        }
 
         $form->on(Form::ON_SUCCESS, function (BaseMonitoringTicketForm $form) use ($url) {
             $this->redirectNow($url);

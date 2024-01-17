@@ -5,17 +5,18 @@ namespace Icinga\Module\Iet\Web\Form;
 use Exception;
 use gipfl\Translation\TranslationHelper;
 use gipfl\Web\Form;
-use Icinga\Application\Config as WebConfig;
 use Icinga\Application\Logger;
 use Icinga\Authentication\Auth;
 use Icinga\Exception\ConfigurationError;
 use Icinga\Module\Eventtracker\ConfigHelper;
+use Icinga\Module\Iet\IcingaDb\CommandPipe;
 use Icinga\Module\Iet\Config;
 use Icinga\Module\Iet\IcingaCommandPipe;
-use Icinga\Module\Monitoring\Object\Host;
+use Icinga\Module\Iet\ObjectHelper;
 use Icinga\Module\Monitoring\Object\MonitoredObject;
-use Icinga\Module\Monitoring\Object\Service;
 use Icinga\Web\Notification;
+use ipl\Orm\Model;
+use RuntimeException;
 
 abstract class BaseMonitoringTicketForm extends Form
 {
@@ -24,15 +25,22 @@ abstract class BaseMonitoringTicketForm extends Form
     /** @@var \Icinga\Module\Iet\Api */
     protected $api;
 
-    /** @var  MonitoredObject */
+    /** @var ObjectHelper */
+    protected $helper;
+
+    /** @var  MonitoredObject|Model */
     private $object;
 
     protected $ietProcessName;
 
     protected $ietProcessVersion = '1.0';
 
-    public function __construct(MonitoredObject $object)
+    /**
+     * @param MonitoredObject|Model $object
+     */
+    public function __construct($object)
     {
+        $this->helper = new ObjectHelper($object);
         $this->object = $object;
     }
 
@@ -41,9 +49,7 @@ abstract class BaseMonitoringTicketForm extends Form
     protected function getIetProcessName()
     {
         if ($this->ietProcessName === null) {
-            throw new \RuntimeException(
-                'Configuration/implementation error, ietProcessName is required'
-            );
+            throw new RuntimeException('Configuration/implementation error, ietProcessName is required');
         }
 
         return $this->ietProcessName;
@@ -78,8 +84,8 @@ abstract class BaseMonitoringTicketForm extends Form
                 'multiOptions' => $ietInstances,
                 'required' => true,
                 'ignore'   => true,
+                'value'    => key($ietInstances),
             ]);
-
             if ($this->hasBeenSent()) {
                 return Config::getApi($this->getElement('iet_instance')->getValue());
             }
@@ -102,22 +108,7 @@ abstract class BaseMonitoringTicketForm extends Form
      */
     protected function getDefaultFromConfig($property, $enum = null, $default = null)
     {
-        $setting = WebConfig::module('iet')->get('defaults', $property);
-        if ($setting !== null) {
-            if ($enum !== null) {
-                if ($idx = \array_search($setting, $enum)) {
-                    $setting = $idx;
-                } elseif (! \array_key_exists($setting, $enum)) {
-                    $setting = null;
-                }
-            }
-        }
-
-        if ($setting === null) {
-            return $default;
-        }
-
-        return $this->fillPlaceholders($setting);
+        return FormUtil::getDefaultFromConfig($this->object, $property);
     }
 
     protected function prefixEnumValueWithName(&$enum)
@@ -144,7 +135,7 @@ abstract class BaseMonitoringTicketForm extends Form
             $this->ack($key);
         } catch (Exception $e) {
             Logger::error($e->getMessage());
-            throw $e;
+            Notification::error($e->getMessage());
         }
 
         $message = "New Ticket $key has been created";
@@ -191,7 +182,7 @@ abstract class BaseMonitoringTicketForm extends Form
 
     protected function getObjectDefault($key)
     {
-        $defaults = $this->getObjectDefaults();
+        $defaults = $this->helper->getDefaults();
         if (\array_key_exists($key, $defaults)) {
             return $defaults[$key];
         }
@@ -199,79 +190,24 @@ abstract class BaseMonitoringTicketForm extends Form
         return null;
     }
 
-    private function getObjectDefaults()
-    {
-        $object = $this->object;
-        $hostName = $object->host_name;
-        $stateName = $this->getStateName();
-        if ($object instanceof Service) {
-            $host = $object->getHost();
-            $host->fetch();
-        } else {
-            $host = $object;
-        }
-
-        $hostLabel = $hostName;
-        if ($address = $host->host_address) {
-            if ($address !== $hostLabel) {
-                $hostLabel = "$hostLabel ($address)";
-            }
-        }
-        if ($object->getType() === 'service') {
-            $serviceName = $object->service_description;
-            $longOutput = $object->service_output;
-            $summary = sprintf(
-                '%s on %s is %s',
-                $serviceName,
-                $hostLabel,
-                $stateName
-            );
-        } else {
-            $serviceName = null;
-            $longOutput = $object->host_output;
-            $summary = sprintf(
-                '%s is %s',
-                $hostLabel,
-                $stateName
-            );
-        }
-
-        $defaults = [
-            'state'   => $stateName,
-            'title'   => $summary,
-            'details' => $longOutput,
-            'icingahost'    => $hostName,
-            'icingaservice' => $serviceName,
-        ];
-
-        return $defaults;
-    }
-
-    protected function getStateName()
-    {
-        $object = $this->object;
-        if ($object->getType() === 'service') {
-            return \strtoupper(Service::getStateText($object->service_state));
-        }
-
-        return \strtoupper(Host::getStateText($object->host_state));
-    }
-
     protected function ack($ietKey)
     {
-        $object = $this->object;
-        $host = $object->host_name;
-        if ($object->getType() === 'service') {
-            $service = $object->service_description;
-        } else {
-            $service = null;
-        }
+        $helper = $this->helper;
+        $host = $helper->getHostName();
+        $service = $helper->getServiceName();
 
         $instance = $this->getValue('iet_instance');
         $ackMessage = "iET ($instance) issue $instance:$ietKey has been created";
+        $username = Auth::getInstance()->getUser()->getUsername();
 
-        $cmd = new IcingaCommandPipe();
-        if ($cmd->acknowledge(Auth::getInstance()->getUser()->getUsername(), $ackMessage, $host, $service)) {
+        if ($helper->isIcingaDb()) {
+            $cmd = new CommandPipe();
+            $acknowledged = $cmd->acknowledgeObject($username, $ackMessage, $this->object);
+        } else {
+            $cmd = new IcingaCommandPipe();
+            $acknowledged = $cmd->acknowledge($username, $ackMessage, $host, $service);
+        }
+        if ($acknowledged) {
             Logger::info("Problem has been acknowledged for $ietKey");
         }
     }
