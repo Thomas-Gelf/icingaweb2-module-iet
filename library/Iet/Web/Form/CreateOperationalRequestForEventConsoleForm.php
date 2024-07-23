@@ -124,28 +124,29 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
 
     protected function addLinks($id)
     {
-        $configuredLinks = WebConfig::module('iet')->getSection('links');
         $issues = $this->issues->getIssues();
-        if (\count($issues) === 1) {
-            $issue = $issues[0];
-            foreach ($configuredLinks as $name => $value) {
-                $link = $this->fillPlaceholdersForIssue($value, $issue);
-                if (\strlen($link) > 0) {
-                    $this->api->addLinkToOR($id, $name, $link);
-                }
-            }
-        } else {
-            foreach ($configuredLinks as $name => $value) {
-                $i = 0;
-                foreach ($issues as $issue) {
-                    $i++;
-                    $link = $this->fillPlaceholdersForIssue($value, $issue);
-                    if (\strlen($link) > 0) {
-                        $this->api->addLinkToOR($id, "$name $i", $link);
-                    }
-                }
+        $isMulti = \count($issues) > 1;
+        $i = 0;
+        foreach ($issues as $issue) {
+            $i++;
+            foreach ($this->getLinksForIssue($issue) as $name => $link) {
+                $this->api->addLinkToOR($id, $isMulti ? "$name $i" : $name, $link);
             }
         }
+    }
+
+    protected function getLinksForIssue(Issue $issue): array
+    {
+        $configuredLinks = WebConfig::module('iet')->getSection('links');
+        $links = [];
+        foreach ($configuredLinks as $name => $value) {
+            $link = $this->fillPlaceholdersForIssue($value, $issue);
+            if (\strlen($link) > 0) {
+                $links[$name] = $link;
+            }
+        }
+
+        return $links;
     }
 
     protected function fillPlaceholdersForIssue($string, Issue $issue)
