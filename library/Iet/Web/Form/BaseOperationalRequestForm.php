@@ -14,6 +14,7 @@ use Icinga\Module\Eventtracker\File;
 use Icinga\Module\Iet\Config;
 use Icinga\Util\Format;
 use Icinga\Web\Notification;
+use ipl\Html\Html;
 
 abstract class BaseOperationalRequestForm extends Form
 {
@@ -181,6 +182,8 @@ abstract class BaseOperationalRequestForm extends Form
             ]);
         }
 
+        $this->showLinkPreview();
+
         $this->addElement('submit', 'submit', [
             'label' => $this->translate('Create')
         ]);
@@ -255,11 +258,40 @@ abstract class BaseOperationalRequestForm extends Form
         return $key;
     }
 
+    protected function showLinkPreview()
+    {
+        $dl = Html::tag('dl');
+        $dl->add(Html::tag('dt', $this->translate('Links')));
+        $links = $this->getLinksForPreview();
+        if (empty($links)) {
+            $dl->add(Html::tag('dd', '-'));
+        } else {
+            $dl->add(Html::tag('dd', Html::tag('ul', $links)));
+        }
+    }
+
+    protected function getLinksForPreview(): array
+    {
+        $links = [];
+        foreach (WebConfig::module('iet')->getSection('links') as $name => $value) {
+            $link = $this->fillPlaceholders($value);
+            if ($link !== null && \strlen($link) > 0) {
+                $links[] = Html::tag('li', Html::tag('a', [
+                    'href' => $link,
+                    'target' => '_blank'
+                ], $name));
+            }
+        }
+
+        return $links;
+    }
+
+
     protected function addLinks($id)
     {
         foreach (WebConfig::module('iet')->getSection('links') as $name => $value) {
             $link = $this->fillPlaceholders($value);
-            if (\strlen($link) > 0) {
+            if ($link !== null && \strlen($link) > 0) {
                 $this->api->addLinkToOR($id, $name, $link);
             }
         }

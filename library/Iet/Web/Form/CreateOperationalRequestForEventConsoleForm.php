@@ -8,6 +8,7 @@ use Icinga\Module\Eventtracker\DbFactory;
 use Icinga\Module\Eventtracker\File;
 use Icinga\Module\Eventtracker\Issue;
 use Icinga\Module\Eventtracker\SetOfIssues;
+use ipl\Html\Html;
 use ipl\Stdlib\Str;
 
 class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequestForm
@@ -133,6 +134,26 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
                 $this->api->addLinkToOR($id, $isMulti ? "$name $i" : $name, $link);
             }
         }
+    }
+
+    protected function getLinksForPreview(): array
+    {
+        $links = [];
+
+        $issues = $this->issues->getIssues();
+        $isMulti = \count($issues) > 1;
+        $i = 0;
+        foreach ($issues as $issue) {
+            $i++;
+            foreach ($this->getLinksForIssue($issue) as $name => $link) {
+                $links[] = Html::tag('li', Html::tag('a', [
+                    'href' => $link,
+                    'target' => '_blank'
+                ], $isMulti ? "$name $i" : $name));
+            }
+        }
+
+        return $links;
     }
 
     protected function getLinksForIssue(Issue $issue): array
