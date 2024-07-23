@@ -268,6 +268,7 @@ abstract class BaseOperationalRequestForm extends Form
         } else {
             $dl->add(Html::tag('dd', Html::tag('ul', $links)));
         }
+        $this->add($dl);
     }
 
     protected function getLinksForPreview(): array
