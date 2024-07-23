@@ -260,15 +260,11 @@ abstract class BaseOperationalRequestForm extends Form
 
     protected function showLinkPreview()
     {
-        $dl = Html::tag('dl');
-        $dl->add(Html::tag('dt', $this->translate('Links')));
         $links = $this->getLinksForPreview();
-        if (empty($links)) {
-            $dl->add(Html::tag('dd', '-'));
-        } else {
-            $dl->add(Html::tag('dd', Html::tag('ul', $links)));
-        }
-        $this->add($dl);
+        $this->add(Html::tag('dl', [
+            Html::tag('dt', $this->translate('Links')),
+            Html::tag('dd', empty($links) ? '-' : Html::tag('ul', $links))
+        ]));
     }
 
     protected function getLinksForPreview(): array
