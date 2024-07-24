@@ -20,7 +20,7 @@ class SoapApiResult extends ApiResult
             foreach ($resultMap as $resultProperty => $targetProperty) {
                 $partial = $simpleXmlResult;
                 foreach (explode('.', $resultProperty) as $key) {
-                    $partial = $simpleXmlResult->$key;
+                    $partial = $partial->$key;
                 }
                 $result->$targetProperty = self::simpleXmlToApiResult($partial);
             }
