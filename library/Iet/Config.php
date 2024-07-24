@@ -3,7 +3,12 @@
 namespace Icinga\Module\Iet;
 
 use Icinga\Application\Config as IcingaConfig;
+use Icinga\Data\ConfigObject;
 use Icinga\Exception\ConfigurationError;
+use Icinga\Module\Iet\Api\IetApi;
+use Icinga\Module\Iet\Api\RestApi;
+use Icinga\Module\Iet\Api\SoapApi;
+use Icinga\Module\Iet\Api\SslContext;
 
 class Config
 {
@@ -127,7 +132,7 @@ class Config
 
     /**
      * @param string|null $name
-     * @return Api
+     * @return Api|IetApi
      * @throws ConfigurationError
      */
     public static function getApi($name = null)
@@ -137,6 +142,10 @@ class Config
         }
 
         $config = static::getInstance($name);
+
+        if ($apiType = $config->get('apiType')) { // Compatibility, keep old API around
+            return self::getNewApi($name, $config, $apiType);
+        }
 
         $url = $config->get('webservice');
         if ($url === null) {
@@ -164,11 +173,29 @@ class Config
     }
 
     /**
-     * @param mixed $value
-     * @return bool
      * @throws ConfigurationError
      */
-    protected static function makeBoolean($value)
+    protected static function getNewApi(string $name, ConfigObject $config, string $apiType): IetApi
+    {
+        $sslContext = SslContext::fromConfig($config);
+        switch ($apiType) {
+            case 'REST':
+                return new IetApi(RestApi::fromConfig($name, $config, $sslContext));
+                break;
+            case 'SOAP':
+                return new IetApi(SoapApi::fromConfig($name, $config, $sslContext));
+        }
+
+        throw new ConfigurationError(sprintf(
+            "Unsupported iET API type '%s', please configure SOAP or REST",
+            $apiType
+        ));
+    }
+
+    /**
+     * @throws ConfigurationError
+     */
+    public static function makeBoolean($value): bool
     {
         if (is_bool($value)) {
             return $value;
@@ -188,7 +215,7 @@ class Config
     /**
      * @return IcingaConfig
      */
-    protected static function instances()
+    protected static function instances(): IcingaConfig
     {
         if (static::$instances === null) {
             static::$instances = IcingaConfig::module('iet', 'instances');
