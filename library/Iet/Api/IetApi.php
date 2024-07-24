@@ -86,7 +86,7 @@ class IetApi
     {
         $pairs = [];
         foreach ($this->api->request('GetGroupsAssignable')->Group as $item) {
-            $pairs[(string) $item['Group']] = (string) $item['Description'];
+            $pairs[$item->Group] = $item->Description;
         }
 
         return $pairs;
@@ -96,12 +96,13 @@ class IetApi
     {
         $pairs = [];
         foreach ($this->api->request('GetGroupsAssignable')->Group as $item) {
-            $parent = (string) $item['Parent'];
-            if (strlen($parent) === 0) {
+            if (is_string($item->Parent)) {
+                $parent = $item->Parent;
+            } else {
                 $parent = null;
             }
 
-            $pairs[(string) $item['Group']] = $parent;
+            $pairs[$item->Group] = $parent;
         }
 
         return $pairs;
@@ -158,8 +159,8 @@ class IetApi
         $pairs = [];
         // GetListOfSourceSystem -> SourceSystemList -> SourceSystem: SourceSystemId => SourceSystemName
         foreach ($this->api->request('GetSourceSystemIdByName')->SourceSystem as $system) {
-            $pairs[(string) $system['SourceSystemId']] = $system['SourceSystemName'];
-            // Also available: $system['SourceSystemProcess']
+            $pairs[$system->SourceSystemId] = $system->SourceSystemName;
+            // Also available: $system->SourceSystemProcess
         }
 
         return $pairs;
