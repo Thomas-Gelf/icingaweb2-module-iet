@@ -16,7 +16,7 @@ class SoapApi implements ApiImplementation
     protected const METHOD_VERSIONS = [
         'AddLinkToOr'             => '1.0',
         'AttachFileTo_OR_SOR_RFI' => '1.0',
-        'CreateOr'                => '1.1',
+        'CreateOR'                => '1.1',
         'GetCategories'           => '1.0',
         'GetCategoryCis'          => '2.0',
         'GetCiById'               => '1.0',
@@ -26,11 +26,11 @@ class SoapApi implements ApiImplementation
         'GetGroups'               => '1.0',
         'GetGroupsAssignable'     => '1.0',
         'GetIssues'               => '1.0',
-        'GetOr'                   => '1.0',
+        'GetOR'                   => '1.0',
         'GetRepGroups'            => '1.0',
         'GetReps'                 => '1.0',
         'GetSourceSystemIdByName' => '1.0',
-        'UpdateOr'                => '1.0',
+        'UpdateOR'                => '1.0',
         'UpdateRFI'               => '1.0',
     ];
 

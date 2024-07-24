@@ -10,9 +10,9 @@ use RuntimeException;
 class RestApi implements ApiImplementation
 {
     protected const METHOD_VERSIONS = [
-        'AddLinkToOr'             => '11.0',
+        'AddLinkToOR'             => '11.0',
         'AttachFileTo_OR_SOR_RFI' => '11.0',
-        'CreateOr'                => '11.1',
+        'CreateOR'                => '11.1',
         'GetCategories'           => '11.0',
         'GetCategoryCis'          => '12.3',
         'GetCiById'               => '11.0',
@@ -22,11 +22,11 @@ class RestApi implements ApiImplementation
         'GetGroups'               => '11.0',
         'GetGroupsAssignable'     => '11.0',
         'GetIssues'               => '11.0',
-        'GetOr'                   => '11.1',
+        'GetOR'                   => '11.1',
         'GetRepGroups'            => '11.0',
         'GetReps'                 => '11.1',
         'GetSourceSystemIdByName' => '11.0',
-        'UpdateOr'                => '11.0',
+        'UpdateOR'                => '11.0',
         'UpdateRFI'               => '11.0',
     ];
 
