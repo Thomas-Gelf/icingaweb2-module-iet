@@ -123,7 +123,11 @@ class SoapApi implements ApiImplementation
             if ($value === null) {
                 continue;
             }
-            $result->add(Html::tag($name, $this->makeXml($value)));
+            if (is_array($value)) {
+                $result->add(Html::tag($name, $this->makeXml($value)));
+            } else {
+                $result->add(Html::tag($name, $value));
+            }
         }
 
         return $result;
