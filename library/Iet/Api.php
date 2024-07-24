@@ -11,6 +11,9 @@ use SoapClient;
 use SoapFault;
 use SoapVar;
 
+/**
+ * @deprecated
+ */
 class Api
 {
     protected $ietNs;
