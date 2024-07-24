@@ -59,7 +59,7 @@ class RestApi implements ApiImplementation
             $context['http']['header'] .= "Content-Type: application/json\r\n"
                                         . "Content-Length: " . strlen($body) . "\r\n";
         } else {
-            $context['http']['header'] .= "Content-Length: " . strlen($body) . "\r\n";
+            $context['http']['header'] .= "Content-Length: 0\r\n";
         }
 
         return RestApiResult::fromResponse(
