@@ -8,7 +8,7 @@ class RestApiResult extends ApiResult
 {
     public static function fromResponse(string $response): ApiResult
     {
-        $response = JsonString::encode($response);
+        $response = JsonString::decode($response);
         $result = new RestApiResult();
         if (isset($response->ResultCode) && $response->ResultCode === 'Error') {
             $result->internalSuccess = false;
