@@ -174,11 +174,12 @@ abstract class BaseOperationalRequestForm extends Form
                 );
             }
 
-            $this->addElement('multiSelect', 'files', [
-                'label'   => $this->translate('Files'),
-                'ignore'  => true,
-                'options' => $options,
-                'value'   => array_keys($options)
+            $this->addElement('select', 'files', [
+                'label'    => $this->translate('Files'),
+                'ignore'   => true,
+                'multiple' => true,
+                'options'  => $options,
+                'value'    => array_keys($options)
             ]);
         }
 
