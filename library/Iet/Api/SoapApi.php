@@ -14,7 +14,7 @@ use SoapVar;
 class SoapApi implements ApiImplementation
 {
     protected const METHOD_VERSIONS = [
-        'AddLinkToOr'             => '1.0',
+        'AddLinkToOR'             => '1.0',
         'AttachFileTo_OR_SOR_RFI' => '1.0',
         'CreateOR'                => '1.1',
         'GetCategories'           => '1.0',
