@@ -37,7 +37,7 @@ class SoapApi implements ApiImplementation
     protected const MAP_RESULT_PROPERTY = [
         'GetCategories'       => ['contents.content' => 'Categories'],
         'GetReps'             => ['Reps.Rep' => 'Rep'],
-        'GetGroups'           => ['contents.content' => 'groups'],
+        'GetGroups'           => ['contents.content' => 'group'],
         'GetRepGroups'        => ['Groups.Group' => 'Group'],
         'GetGroupsAssignable' => ['Groups.Group' => 'Group'],
     ];
