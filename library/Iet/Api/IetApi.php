@@ -78,8 +78,11 @@ class IetApi
 
     public function getReportersDefaultGroup(string $reporter): string
     {
-        // return 'INSE-UNOS';
-        return (string) $this->api->request('GetDefGroupOfRep', ['rep' => $reporter])->rep->DefGroup;
+        $rep = $this->api->request('GetDefGroupOfRep', ['rep' => $reporter])->rep;
+        if (is_array($rep)) { // Inconsistency SOAP vs REST
+            $rep = $rep[0];
+        }
+        return $rep->DefGroup;
     }
 
     public function listGroupsAssignable(): array
