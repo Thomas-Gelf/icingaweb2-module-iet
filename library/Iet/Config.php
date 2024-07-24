@@ -42,11 +42,10 @@ class Config
     }
 
     /**
-     * @param string $name
-     * @param string|null $property
      * @throws ConfigurationError
+     * @return no-return
      */
-    protected static function failMissing($name, $property = null)
+    public static function failMissing(string $name, ?string $property = null): void
     {
         $config = '[ICINGAWEB_CONFIGDIR]/modules/iet/instances.ini';
         if ($property === null) {
