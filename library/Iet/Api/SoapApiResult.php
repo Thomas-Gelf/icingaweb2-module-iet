@@ -24,7 +24,15 @@ class SoapApiResult extends ApiResult
             foreach ($resultMap as $resultProperty => $targetProperty) {
                 $partial = $responseObject;
                 foreach (explode('.', $resultProperty) as $key) {
-                    $partial = $partial->$key;
+                    if (is_array($partial)) {
+                        $newPartial = [];
+                        foreach ($partial as $pEntry) {
+                            $newPartial[] = $pEntry->$key;
+                        }
+                        $partial = $newPartial;
+                    } else {
+                        $partial = $partial->$key;
+                    }
                 }
                 $result->$targetProperty = $partial;
             }
