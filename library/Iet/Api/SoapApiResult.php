@@ -17,7 +17,7 @@ class SoapApiResult extends ApiResult
         $status = $response->ProcessOperationResult->Status;
         // Pragmatic, simple way to convert the structure:
         $result = new SoapApiResult();
-        $responseObject = JsonString::encode(JsonString::encode(
+        $responseObject = JsonString::decode(JsonString::encode(
             self::anyResultToSimpleXml($response->ProcessOperationResult->Result->any, $soapNs)
         ));
         if ($resultMap) {
