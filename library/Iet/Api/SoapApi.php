@@ -38,8 +38,8 @@ class SoapApi implements ApiImplementation
         'GetCategories'       => ['contents.content' => 'Categories'],
         'GetReps'             => ['Reps.Rep' => 'Rep'],
         'GetGroups'           => ['contents.content' => 'groups'],
-        'GetRepGroups'        => ['Groups.Group', 'Group'],
-        'GetGroupsAssignable' => ['Groups.Group', 'Group'],
+        'GetRepGroups'        => ['Groups.Group' => 'Group'],
+        'GetGroupsAssignable' => ['Groups.Group' => 'Group'],
     ];
 
     protected $ietNs;
