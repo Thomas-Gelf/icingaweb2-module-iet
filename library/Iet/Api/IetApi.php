@@ -70,7 +70,7 @@ class IetApi
         $list = [];
 
         foreach ($this->api->request('GetRepGroups', ['rep' => $reporter])->Group as $item) {
-            $list[] = $item['GroupName'];
+            $list[] = $item->GroupName;
         }
 
         return \array_combine($list, $list);
