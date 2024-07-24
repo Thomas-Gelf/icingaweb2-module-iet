@@ -41,7 +41,7 @@ class RestApi implements ApiImplementation
     {
         $this->baseUrl = $baseUrl;
         $this->sslContext = $sslContext;
-        $this->context = $this->sslContext->createStreamContext();
+        $this->context = $this->sslContext->getStreamContextProperties();
         $this->context['http'] = [
             'method' => 'POST',
             'header' => "Accept: application/json\r\n"
@@ -55,11 +55,15 @@ class RestApi implements ApiImplementation
         $body = $data ? JsonString::encode($data) : null;
         $context = $this->context;
         if ($body) {
-            $context['content'] = $body;
+            $context['http']['content'] = $body;
+            $context['http']['header'] .= "Content-Type: application/json\r\n"
+                                        . "Content-Length: " . strlen($body) . "\r\n";
+        } else {
+            $context['http']['header'] .= "Content-Length: " . strlen($body) . "\r\n";
         }
 
         return RestApiResult::fromResponse(
-            @file_get_contents($this->prepareUrl($method), false, $context)
+            file_get_contents($this->prepareUrl($method), false, stream_context_create($context))
         );
     }
 
