@@ -126,7 +126,7 @@ class IetApi
             if (isset($assignments[$name])) {
                 $parent = $assignments[$name];
 
-                if ($parent === null) {
+                if ($parent === null || $parent === '') {
                     $root[$name] = $group;
                 } elseif (isset($all[$parent])) {
                     $all[$assignments[$name]]->children[$name] = $group;
