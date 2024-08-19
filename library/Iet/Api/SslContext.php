@@ -31,6 +31,22 @@ class SslContext
         return stream_context_create($this->getStreamContextProperties());
     }
 
+    public function applyCurlOptions($curl)
+    {
+        assert(is_resource($curl));
+        if ($this->verifyPeer) {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        } else {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+        }
+        if ($this->sslKey) {
+            curl_setopt($curl, CURLOPT_SSLCERT, $this->sslCert);
+            curl_setopt($curl, CURLOPT_SSLKEY, $this->sslKey);
+        }
+    }
+
     public function getStreamContextProperties(): array
     {
         $params = ['ssl' => []];

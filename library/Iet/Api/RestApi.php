@@ -35,36 +35,51 @@ class RestApi implements ApiImplementation
 
     /** @var string */
     protected $baseUrl;
-    protected $context;
+    protected $defaultRequestHeaders;
 
     public function __construct(string $baseUrl, string $authorizationHeaderLine, SslContext $sslContext)
     {
         $this->baseUrl = $baseUrl;
         $this->sslContext = $sslContext;
-        $this->context = $this->sslContext->getStreamContextProperties();
-        $this->context['http'] = [
-            'method' => 'POST',
-            'header' => "Accept: application/json\r\n"
-                      . "Authorization: $authorizationHeaderLine\r\n"
-                      . "User-Agent: Icinga-iET/0.10\r\n",
+        $this->defaultRequestHeaders = [
+            "Accept: application/json",
+            "Authorization: $authorizationHeaderLine",
+            "User-Agent: Icinga-iET/0.10",
         ];
+    }
+
+    protected function curlInit()
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $this->sslContext->applyCurlOptions($curl);
+
+        return $curl;
     }
 
     public function request(string $method, ?array $data = null): ApiResult
     {
         $body = $data ? JsonString::encode($data) : null;
-        $context = $this->context;
+        $curl = $this->curlInit();
+        $headers = $this->defaultRequestHeaders;
         if ($body) {
-            $context['http']['content'] = $body;
-            $context['http']['header'] .= "Content-Type: application/json\r\n"
-                                        . "Content-Length: " . strlen($body) . "\r\n";
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+            $headers[] = 'Content-Type: application/json';
+            $headers[] = 'Content-Length: ' . strlen($body);
         } else {
-            $context['http']['header'] .= "Content-Length: 0\r\n";
+            $headers[] = 'Content-Length: 0';
         }
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_URL, $this->prepareUrl($method));
+        $result = curl_exec($curl);
+        if (curl_errno($curl)) {
+            curl_close($curl);
+            throw new RuntimeException('Request failed: ' . curl_error($curl));
+        }
+        curl_close($curl);
 
-        return RestApiResult::fromResponse(
-            file_get_contents($this->prepareUrl($method), false, stream_context_create($context))
-        );
+        return RestApiResult::fromResponse($result);
     }
 
     public static function fromConfig(string $name, ConfigObject $config, SslContext $sslContext): RestApi
