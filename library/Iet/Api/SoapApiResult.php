@@ -72,7 +72,7 @@ class SoapApiResult extends ApiResult
 
     protected static function anyResultToSimpleXml($result, string $ns): SimpleXMLElement
     {
-        $resultWithNs = simplexml_load_string($result, null, null, $ns);
+        $resultWithNs = simplexml_load_string($result, null, 0, $ns);
         if (empty($resultWithNs)) {
             return simplexml_load_string($result);
         }

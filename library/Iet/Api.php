@@ -452,7 +452,7 @@ class Api
         $resultWithNs = simplexml_load_string(
             $result->ProcessOperationResult->Result->any,
             null,
-            null,
+            0,
             $this->ietNs
         );
         if (empty($resultWithNs)) {
