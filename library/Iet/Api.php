@@ -354,7 +354,7 @@ class Api
             $result = $this->getAnyResult($result);
 
             if ($status !== 'No Error') {
-                $first = current($result); // CreateOR vs CreateOR and such woes
+                $first = current((array) $result); // CreateOR vs CreateOR and such woes
                 if (\is_string($first)) {
                     $message = "iET $status: $first";
                 } elseif (isset($first->ErrorMessage)) {
