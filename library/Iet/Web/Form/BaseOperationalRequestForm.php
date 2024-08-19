@@ -66,7 +66,6 @@ abstract class BaseOperationalRequestForm extends Form
                 ]);
             }
             $this->getElement('iet_instance')->addMessage($e->getMessage());
-            $this->submitLabel = false;
 
             return;
         }
