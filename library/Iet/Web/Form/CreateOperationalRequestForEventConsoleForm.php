@@ -51,10 +51,7 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
                 $messages[] = \sprintf(
                     '%s: %s',
                     $object,
-                    $this->shorten(
-                        \preg_replace('/^(.+)[\r\n].+?$/s', '\1', \trim(\strip_tags($issue->get('message')))),
-                        120
-                    )
+                    \preg_replace('/^(.+)[\r\n].+?$/s', '\1', \trim(\strip_tags($issue->get('message'))))
                 );
             }
 
@@ -67,6 +64,16 @@ class CreateOperationalRequestForEventConsoleForm extends BaseOperationalRequest
             unset($message);
 
             $message = \implode("\n", $messages);
+
+            $maxLength = 4096; // TODO: verify
+            if (strlen($message) > $maxLength) {
+                $singleMax = (int) floor($maxLength / count($messages));
+                array_map(function ($string) use ($singleMax) {
+                    return substr($string, 0, $singleMax);
+                }, $messages);
+                $message = \implode("\n", $messages);
+            }
+
             $hosts = \array_keys($hosts);
             $object = \sprintf('%s problems', count($issues));
             if (\count($hosts) === 1) {
