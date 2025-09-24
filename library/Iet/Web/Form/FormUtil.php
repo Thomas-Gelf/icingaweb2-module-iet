@@ -96,7 +96,7 @@ class FormUtil
      * @param callable|null $callback
      * @return string|null
      */
-    protected static function fillPlaceholders($string, $object, callable $callback = null): ?string
+    protected static function fillPlaceholders($string, $object, ?callable $callback = null): ?string
     {
         $replace = function ($match) use ($object) {
             $propertyString = \trim($match[1], '{}');

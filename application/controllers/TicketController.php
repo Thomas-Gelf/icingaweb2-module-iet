@@ -47,7 +47,7 @@ class TicketController extends Controller
         if ($implementation === null) {
             throw new NotFoundError('No ticket_form has been defined');
         }
-        $class = "\\Icinga\\Module\\Iet\\Web\\Form\\${implementation}Form";
+        $class = "\\Icinga\\Module\\Iet\\Web\\Form\\{$implementation}Form";
         if (Module::exists('icingadb')) {
             $db = new IcingaDbBackend();
             if ($service) {

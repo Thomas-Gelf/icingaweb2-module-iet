@@ -107,16 +107,16 @@ class ApiCommand extends Command
     protected function renderEnum($enum)
     {
         $s = $this->screen;
-        $maxlen = 1;
+        $maxLen = 1;
         $allNumeric = true;
         foreach (array_keys($enum) as $name) {
-            $maxlen = max($maxlen, strlen($name));
+            $maxLen = max($maxLen, strlen($name));
             if ($allNumeric && ! (is_int($name) || ctype_digit($name))) {
                 $allNumeric = false;
             }
         }
 
-        $nameFormat = $allNumeric ? "%${maxlen}d" : "%${maxlen}s";
+        $nameFormat = $allNumeric ? "%{$maxLen}d" : "%{$maxLen}s";
         foreach ($enum as $name => $value) {
             printf(
                 "%s: %s\n",
