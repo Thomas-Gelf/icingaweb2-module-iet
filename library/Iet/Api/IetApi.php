@@ -76,12 +76,18 @@ class IetApi
         return \array_combine($list, $list);
     }
 
-    public function getReportersDefaultGroup(string $reporter): string
+    public function getReportersDefaultGroup(string $reporter): ?string
     {
+        // return 'INSE-UNOS';
         $rep = $this->api->request('GetDefGroupOfRep', ['rep' => $reporter])->rep;
         if (is_array($rep)) { // Inconsistency SOAP vs REST
-            $rep = $rep[0];
+            if (count($rep) > 1) {
+                $rep = $rep[0];
+            } else {
+                return null;
+            }
         }
+
         return $rep->DefGroup;
     }
 
