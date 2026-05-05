@@ -3,6 +3,8 @@
 namespace Icinga\Module\Iet\Controllers;
 
 use gipfl\IcingaWeb2\Url;
+use gipfl\Web\Widget\Hint;
+use Icinga\Exception\NotFoundError;
 use Icinga\Module\Eventtracker\DbFactory;
 use Icinga\Module\Eventtracker\Issue;
 use Icinga\Module\Eventtracker\IssueHistory;
@@ -25,13 +27,17 @@ class OrController extends Controller
     {
         $api = Config::getApi();
         $id = $this->params->getRequired('id');
-        $or = $api->getOR($id);
         $this->addSingleTab($this->translate('OR Details'));
         $this->addTitle(\sprintf(
             $this->translate('Operational Request #%s'),
             $id
         ));
-        $this->content()->add(new OperationalRequestDetails($or));
+        try {
+            $or = $api->getOR($id);
+            $this->content()->add(new OperationalRequestDetails($or));
+        } catch (NotFoundError $e) {
+            $this->content()->add(Hint::error('There is no such OR'));
+        }
     }
 
     /**

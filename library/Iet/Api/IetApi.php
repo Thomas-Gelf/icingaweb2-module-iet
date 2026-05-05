@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Iet\Api;
 
+use Icinga\Exception\NotFoundError;
 use Icinga\Module\Iet\OperationalRequest;
 use RunTimeException;
 use SimpleXMLElement;
@@ -218,7 +219,12 @@ class IetApi
         if (isset($response->OR) && $response->OR instanceof SimpleXMLElement) {
             return OperationalRequest::fromSimpleXml($response->OR);
         } elseif ($response instanceof RestApiResult) {
-            return OperationalRequest::fromStdClass($response->{'0'});
+            if (isset($response->{'0'})) {
+                return OperationalRequest::fromStdClass($response->{'0'});
+            }
+            // Hint: ->internalSuccess is false, when we reach this.
+
+            throw new NotFoundError("Got no OR for $id");
         } else {
             throw new RuntimeException('Got unexpected iET response for GetOr: ' . var_export($response, true));
         }
