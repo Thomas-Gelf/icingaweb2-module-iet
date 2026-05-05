@@ -4,6 +4,7 @@ namespace Icinga\Module\Iet\Api;
 
 use Icinga\Module\Iet\OperationalRequest;
 use RunTimeException;
+use SimpleXMLElement;
 
 class IetApi
 {
@@ -213,8 +214,13 @@ class IetApi
 
     public function getOR(string $id): OperationalRequest
     {
-        return OperationalRequest::fromSimpleXml(
-            $this->api->request('GetOR', ['id' => $id])->OR
-        );
+        $response = $this->api->request('GetOR', ['id' => $id]);
+        if (isset($response->OR) && $response->OR instanceof SimpleXMLElement) {
+            return OperationalRequest::fromSimpleXml($response->OR);
+        } elseif ($response instanceof RestApiResult) {
+            return OperationalRequest::fromStdClass($response->{'0'});
+        } else {
+            throw new RuntimeException('Got unexpected iET response for GetOr: ' . var_export($response, true));
+        }
     }
 }

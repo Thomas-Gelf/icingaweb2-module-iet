@@ -2,7 +2,9 @@
 
 namespace Icinga\Module\Iet;
 
+use Icinga\Module\Iet\Api\RestApiResult;
 use SimpleXMLElement;
+use stdClass;
 
 class OperationalRequest
 {
@@ -32,13 +34,9 @@ class OperationalRequest
     {
     }
 
-    /**
-     * @param SimpleXMLElement $xml
-     * @return static
-     */
-    public static function fromSimpleXml(SimpleXMLElement $xml)
+    public static function fromSimpleXml(SimpleXMLElement $xml): OperationalRequest
     {
-        $or = new static();
+        $or = new OperationalRequest();
         $or->id      = (string) $xml->id;
         $or->title   = (string) $xml->title;
         $or->rep     = (string) $xml->rep;
@@ -52,6 +50,24 @@ class OperationalRequest
             $or->worklog[] = WorklogEntry::fromSimpleXml($entry);
         }
 
+        return $or;
+    }
+
+    public static function fromStdClass(stdClass $object): OperationalRequest
+    {
+        $or = new OperationalRequest();
+        $or->id      = (string) $object->id;
+        $or->title   = (string) $object->title;
+        $or->rep     = (string) $object->rep;
+        $or->repgrp  = (string) $object->repgrp;
+        $or->fe      = (string) $object->fe;
+        $or->ferep   = (string) $object->ferep;
+        $or->caller  = (string) $object->caller;
+        $or->status  = (string) $object->status;
+        $or->details = (string) $object->details;
+        foreach ($object->worklog ?? [] as $entry) {
+            $or->worklog[] = WorklogEntry::fromStdClass($entry);
+        }
         return $or;
     }
 }
