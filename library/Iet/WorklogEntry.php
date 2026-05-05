@@ -40,7 +40,7 @@ class WorklogEntry
         $entry->topic      = (string) $object->topic;
         $entry->entry      = (string) $object->entry;
         $entry->enteredby  = (string) $object->enteredby;
-        $entry->enteredate = \strtotime((string) $object->enteredate);
+        $entry->enteredate = \strtotime((string) $object->enteredat); // hint: differs from SOAP (enteredate)?!
 
         return $entry;
     }
